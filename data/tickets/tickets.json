@@ -1,0 +1,227 @@
+[
+  {
+    "ticket_id": "T-10001",
+    "received_at": "2026-05-04T07:42:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Becker",
+    "customer_region": "Berlin",
+    "subject": "rote LED am Wechselrichter!!!",
+    "body": "Hallo Empire, mein Wechselrichter (Huawei) blinkt rot und in der App steht Fehler 0x0001. Wir haben heute Morgen kurz keinen Strom gehabt im ganzen Haus. Was sollen wir tun? Liebe Grüße"
+  },
+  {
+    "ticket_id": "T-10002",
+    "received_at": "2026-05-04T08:11:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Anderson",
+    "customer_region": "Munich",
+    "subject": "solar inverter error 501 - urgent",
+    "body": "Hi team — Huawei inverter showing yellow LED since yesterday afternoon. App says 'Error 501 DC insulation'. We had heavy rain Sunday. Can someone come out? It's been raining a lot."
+  },
+  {
+    "ticket_id": "T-10003",
+    "received_at": "2026-05-04T08:34:00+02:00",
+    "channel": "phone-transcript",
+    "customer_name": "Frau Müller",
+    "customer_region": "Hamburg",
+    "subject": "Solaranlage geht ständig aus mittags",
+    "body": "Anlage funktioniert morgens und abends gut, aber zwischen 12 und 14 Uhr fällt sie immer aus. App zeigt Error 602 Grid Voltage. Das geht jetzt seit einer Woche so. Wir haben sehr lange Kabel zum Zählerschrank, ca 30 Meter."
+  },
+  {
+    "ticket_id": "T-10004",
+    "received_at": "2026-05-04T09:02:00+02:00",
+    "channel": "email",
+    "customer_name": "Herr Schmidt",
+    "customer_region": "Berlin",
+    "subject": "SMA macht Geräusche",
+    "body": "Mein SMA Sunny Boy macht seit ein paar Tagen ein schleifendes Geräusch, vor allem wenn die Sonne stark scheint. App zeigt Warnung 410 irgendwas mit Lüfter. Produziert noch Strom aber das Geräusch nervt."
+  },
+  {
+    "ticket_id": "T-10005",
+    "received_at": "2026-05-04T09:18:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Wagner",
+    "customer_region": "Hamburg",
+    "subject": "kein warmes wasser mehr!! Vaillant zeigt F.22",
+    "body": "Hilfe bitte!!! Heute morgen ist die Wärmepumpe ausgegangen, kein warmes Wasser, Heizung kalt. Display zeigt F.22. Wir haben zwei kleine Kinder. Können sie heute noch kommen?"
+  },
+  {
+    "ticket_id": "T-10006",
+    "received_at": "2026-05-04T09:40:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Patel",
+    "customer_region": "Frankfurt",
+    "subject": "battery offline goodwe",
+    "body": "Hello, my hybrid system seems fine for solar but the Goodwe app shows the battery is offline. Error 115 it says. Solar is still feeding the grid normally. Not urgent but would like it fixed."
+  },
+  {
+    "ticket_id": "T-10007",
+    "received_at": "2026-05-04T10:05:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Hoffmann",
+    "customer_region": "Stuttgart",
+    "subject": "Fronius Symo Neustart alle 3 Stunden",
+    "body": "Unser Fronius Symo (jetzt 6 Jahre alt) startet sich seit gestern alle paar Stunden neu. Status 1010. Licht im Haus flackert manchmal. Was ist da los?"
+  },
+  {
+    "ticket_id": "T-10008",
+    "received_at": "2026-05-04T10:24:00+02:00",
+    "channel": "phone-transcript",
+    "customer_name": "Herr Lehmann",
+    "customer_region": "Cologne",
+    "subject": "Viessmann morgens Fehler A9",
+    "body": "Wärmepumpe Viessmann Vitocal zeigt morgens A9 wenn es kalt war. Nach ein paar Stunden geht sie wieder. Heizen tut sie aber dann doch normal."
+  },
+  {
+    "ticket_id": "T-10009",
+    "received_at": "2026-05-04T10:50:00+02:00",
+    "channel": "email",
+    "customer_name": "Ms. Schneider",
+    "customer_region": "Munich",
+    "subject": "battery won't charge past 90",
+    "body": "My LFP battery won't charge above 90 percent for the last week. No specific error in the app, just stops there. System is from 2023."
+  },
+  {
+    "ticket_id": "T-10010",
+    "received_at": "2026-05-04T11:02:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Klein",
+    "customer_region": "Düsseldorf",
+    "subject": "Wallbox lädt nicht mehr",
+    "body": "Unsere Empire Wallbox lädt das Auto nicht mehr seit gestern Nacht. LED leuchtet aber blau (sollte grün sein). Auto ist ein VW ID.4."
+  },
+  {
+    "ticket_id": "T-10011",
+    "received_at": "2026-05-04T11:24:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Schulz",
+    "customer_region": "Berlin",
+    "subject": "App keeps disconnecting",
+    "body": "The FusionSolar app keeps showing 'inverter offline' but the inverter itself is running. Maybe a wifi issue? Not really an emergency."
+  },
+  {
+    "ticket_id": "T-10012",
+    "received_at": "2026-05-04T11:40:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Roth",
+    "customer_region": "Frankfurt",
+    "subject": "Anlage produziert weniger als letztes Jahr",
+    "body": "Hallo, wir bekommen weniger Ertrag als letztes Jahr im April. Liegt es an Verschmutzung? Können sie einen Termin für Reinigung machen?"
+  },
+  {
+    "ticket_id": "T-10013",
+    "received_at": "2026-05-04T12:15:00+02:00",
+    "channel": "email",
+    "customer_name": "Frau Bauer",
+    "customer_region": "Hamburg",
+    "subject": "Vaillant Wärmepumpe sehr laut",
+    "body": "Die Wärmepumpe ist seit ein paar Tagen viel lauter geworden, besonders wenn sie startet. Nachbarn beschweren sich schon. Kein Fehlercode in der App."
+  },
+  {
+    "ticket_id": "T-10014",
+    "received_at": "2026-05-04T12:38:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. O'Brien",
+    "customer_region": "Munich",
+    "subject": "RE: RE: error 602 still happening",
+    "body": "Hi - I reported error 602 last week, someone said you'd send a tech but no one came. Still happening every day around noon. This is the third time I'm writing."
+  },
+  {
+    "ticket_id": "T-10015",
+    "received_at": "2026-05-04T13:01:00+02:00",
+    "channel": "email",
+    "customer_name": "Herr Ahmadi",
+    "customer_region": "Stuttgart",
+    "subject": "neue Anlage komplett aus",
+    "body": "Anlage wurde letzten Monat installiert und produziert seit gestern 0 kWh. Wechselrichter zeigt Error 301 (SMA Sunny Boy). Display blinkt durchgehend."
+  },
+  {
+    "ticket_id": "T-10016",
+    "received_at": "2026-05-04T13:25:00+02:00",
+    "channel": "email",
+    "customer_name": "Family Park",
+    "customer_region": "Berlin",
+    "subject": "Smoke smell from inverter cabinet??",
+    "body": "We just noticed a slight burning smell near the inverter in the basement. The inverter is still running. Should we turn something off? This feels urgent."
+  },
+  {
+    "ticket_id": "T-10017",
+    "received_at": "2026-05-04T13:42:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Vogel",
+    "customer_region": "Cologne",
+    "subject": "Frage zur Einspeisevergütung",
+    "body": "Hallo, wie lange dauert es bis die EEG-Anmeldung bestätigt ist? Habe vor 6 Wochen die Unterlagen geschickt aber noch nichts gehört."
+  },
+  {
+    "ticket_id": "T-10018",
+    "received_at": "2026-05-04T14:05:00+02:00",
+    "channel": "email",
+    "customer_name": "Frau Albrecht",
+    "customer_region": "Berlin",
+    "subject": "F.22 wieder",
+    "body": "Wärmepumpe Vaillant aroTHERM zeigt schon wieder F.22, gleiches Problem wie im Januar. Es war damals ein Leck, vielleicht ist es wieder so?"
+  },
+  {
+    "ticket_id": "T-10019",
+    "received_at": "2026-05-04T14:30:00+02:00",
+    "channel": "email",
+    "customer_name": "Herr Krause",
+    "customer_region": "Düsseldorf",
+    "subject": "Goodwe app login funktioniert nicht",
+    "body": "Komme nicht mehr in die Goodwe app rein, Passwort wurde abgelehnt. Wer kann das zurücksetzen?"
+  },
+  {
+    "ticket_id": "T-10020",
+    "received_at": "2026-05-04T14:48:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Berger",
+    "customer_region": "Hamburg",
+    "subject": "Optimizer-Fehler einzelnes Modul",
+    "body": "FusionSolar zeigt einen einzelnen Optimizer auf dem Dach als 'kommunikationslos'. Anlage läuft sonst normal. Optimizer ist auf Modul 14 von 20."
+  },
+  {
+    "ticket_id": "T-10021",
+    "received_at": "2026-05-04T15:10:00+02:00",
+    "channel": "email",
+    "customer_name": "Ms. Tanaka",
+    "customer_region": "Frankfurt",
+    "subject": "huawei error 501 after storm",
+    "body": "Big thunderstorm last night. This morning Huawei inverter shows yellow LED, error 501. PV cables on roof look ok from ground."
+  },
+  {
+    "ticket_id": "T-10022",
+    "received_at": "2026-05-04T15:32:00+02:00",
+    "channel": "email",
+    "customer_name": "Familie Meier",
+    "customer_region": "Stuttgart",
+    "subject": "Termin verschieben",
+    "body": "Können wir den Termin von übermorgen auf nächste Woche verschieben? Wir sind nicht zuhause."
+  },
+  {
+    "ticket_id": "T-10023",
+    "received_at": "2026-05-04T15:55:00+02:00",
+    "channel": "email",
+    "customer_name": "Herr Weiss",
+    "customer_region": "Munich",
+    "subject": "App zeigt 0 Watt obwohl Sonne",
+    "body": "App zeigt 0 Watt Erzeugung obwohl heute schöner sonniger Tag. Wechselrichter Display zeigt aber 3.2 kW. Welche Daten stimmen?"
+  },
+  {
+    "ticket_id": "T-10024",
+    "received_at": "2026-05-04T16:18:00+02:00",
+    "channel": "email",
+    "customer_name": "Family Lopez",
+    "customer_region": "Berlin",
+    "subject": "battery wrong reading",
+    "body": "The Goodwe app says battery is at 100% all the time, even at night. Pretty sure that's wrong since solar is the only source."
+  },
+  {
+    "ticket_id": "T-10025",
+    "received_at": "2026-05-04T16:40:00+02:00",
+    "channel": "email",
+    "customer_name": "Frau Schwarz",
+    "customer_region": "Cologne",
+    "subject": "Überspannungsschutz ausgelöst nach Blitz",
+    "body": "Letzte Nacht Blitzeinschlag in der Nähe. Heute morgen sehe ich dass der SPD im Sicherungskasten rot anzeigt (war grün). Anlage läuft, aber sollte das gewechselt werden?"
+  }
+]

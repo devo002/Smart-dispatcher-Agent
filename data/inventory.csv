@@ -1,0 +1,83 @@
+part_id,part_name,manufacturer,compatible_models,stock_level,warehouse_location,price_eur,status
+HUA-AC-ISO-V2,AC Isolator V2 with voltage compensation,Huawei,SUN2000-3KTL/4KTL/5KTL/6KTL,0,Berlin-Tempelhof,189.00,discontinued
+HUA-AC-ISO-V1,AC Isolator V1 (legacy),Huawei,SUN2000-3KTL/4KTL/5KTL,30,Berlin-Tempelhof,142.00,active
+HUA-COMM-DONGLE,Smart Dongle WLAN-FE,Huawei,SUN2000 series,47,Berlin-Tempelhof,68.00,active
+HUA-OPTIMIZER-450W,Power Optimizer 450W,Huawei,SUN2000 hybrid,210,Munich-Riem,52.00,active
+HUA-FUSE-25A,DC String Fuse 25A,Huawei,SUN2000 series,512,Munich-Riem,4.50,active
+SMA-AFCI-MOD,AFCI Arc Fault Module,SMA,Sunny Boy 3.0/3.6/4.0/5.0,40,Hamburg-Altona,165.00,active
+SMA-FAN-ASSY,Cooling Fan Assembly,SMA,Sunny Boy 3.0-5.0 AV-41,35,Hamburg-Altona,89.00,active
+SMA-DISPLAY-LCD,Front Panel LCD,SMA,Sunny Boy AV-40,25,Hamburg-Altona,72.00,active
+SMA-VARISTOR,Surge Varistor,SMA,Sunny Boy series,134,Hamburg-Altona,11.00,active
+SMA-CAP-DC,DC Link Capacitor,SMA,Sunny Boy 5.0,0,Hamburg-Altona,124.00,backorder
+FRO-CAP-BANK,Capacitor Bank Assembly (workshop only),Fronius,Symo 3.0-10.0,8,Workshop-Linz,420.00,workshop_only
+FRO-DATA-MGR,Datamanager 2.0,Fronius,Symo / Galvo,28,Linz-Workshop,195.00,active
+FRO-FAN-12V,Fan 12V 92mm,Fronius,Symo series,55,Linz-Workshop,34.00,active
+GOO-CAN-CABLE-2M,CAN-bus Cable 2m M12,Goodwe,GW-ET / GW-EH hybrid,89,Berlin-Tempelhof,28.00,active
+GOO-CAN-CABLE-5M,CAN-bus Cable 5m M12,Goodwe,GW-ET / GW-EH hybrid,42,Berlin-Tempelhof,38.00,active
+GOO-LOAD-LUGNUT,Battery Load Connector,Goodwe,Lynx Home U,16,Berlin-Tempelhof,22.00,active
+GOO-METER-CT,CT Clamp Energy Meter,Goodwe,GW-ET hybrid,71,Berlin-Tempelhof,46.00,active
+MC4-GASKET-KIT,MC4 Connector Gasket Kit (10pc),Multi,All MC4 systems,340,Berlin-Tempelhof,18.00,active
+MC4-CRIMPER,MC4 Crimping Tool,Multi,Field tools,30,Berlin-Tempelhof,142.00,active
+PV-CABLE-6MM-50M,Solar Cable 6mm² 50m roll,Multi,All PV strings,67,Munich-Riem,98.00,active
+PV-CABLE-4MM-100M,Solar Cable 4mm² 100m roll,Multi,All PV strings,45,Munich-Riem,164.00,active
+PV-CONNECTOR-MC4M,MC4 Male Connector (single),Multi,All MC4 systems,1240,Berlin-Tempelhof,2.80,active
+PV-CONNECTOR-MC4F,MC4 Female Connector (single),Multi,All MC4 systems,1180,Berlin-Tempelhof,2.80,active
+PV-MOUNT-RAIL-3M,Roof Mounting Rail 3m,K2 Systems,All pitched roof,86,Munich-Riem,78.00,active
+PV-MOUNT-CLAMP,Mid Clamp Universal,K2 Systems,All modules 30-40mm,2400,Munich-Riem,4.20,active
+R290-REFRIG-1KG,R290 Refrigerant 1kg cylinder,Generic,Heat pumps,45,Berlin-Tempelhof,96.00,active
+R32-REFRIG-1KG,R32 Refrigerant 1kg cylinder,Generic,Heat pumps,38,Berlin-Tempelhof,84.00,active
+BRAZE-KIT-HP,Brazing Kit Heat Pump,Generic,Field service,40,Berlin-Tempelhof,210.00,active
+N2-PURGE-CYLINDER,Nitrogen Purge Cylinder 2L,Generic,Refrigerant work,35,Berlin-Tempelhof,68.00,active
+VIE-COMP-CAP-45UF,Compressor Start Capacitor 45uF,Viessmann,Vitocal 200/250-S,30,Hamburg-Altona,42.00,active
+VIE-EXP-VALVE,Expansion Valve EEV,Viessmann,Vitocal 200,25,Hamburg-Altona,178.00,active
+VIE-CTRL-PCB,Main Control PCB,Viessmann,Vitocal 200-S,20,Hamburg-Altona,520.00,active
+VIE-DISPLAY,Front Display Module,Viessmann,Vitocal series,22,Hamburg-Altona,165.00,active
+VAI-SENSOR-NTC,NTC Temperature Sensor,Vaillant,aroTHERM plus,38,Munich-Riem,24.00,active
+VAI-PRESS-SW,Pressure Switch HP/LP,Vaillant,aroTHERM,21,Munich-Riem,58.00,active
+VAI-FILTER-DRY,Filter Drier,Vaillant,aroTHERM,29,Munich-Riem,32.00,active
+VAI-CTRL-MULTIMATIC,Multimatic Controller,Vaillant,aroTHERM systems,25,Munich-Riem,310.00,active
+HP-CONTACTOR-32A,32A 3-phase Contactor,Generic,Heat pump AC side,44,Berlin-Tempelhof,38.00,active
+HP-DRAIN-HOSE,Condensate Drain Hose 5m,Generic,All heat pumps,73,Berlin-Tempelhof,18.00,active
+HP-INSULATION-WRAP,Refrigerant Pipe Insulation 10m,Generic,Heat pumps,52,Berlin-Tempelhof,28.00,active
+BAT-BMS-LFP,Battery Management System (LFP),Generic,LFP battery 5-15kWh,25,Berlin-Tempelhof,420.00,active
+BAT-CABLE-50MM2,Battery DC Cable 50mm² 2m,Generic,All hybrid systems,38,Berlin-Tempelhof,52.00,active
+BAT-FUSE-100A,Battery Fuse 100A,Generic,All battery systems,156,Berlin-Tempelhof,18.00,active
+BAT-LUG-50MM2,Cable Lug 50mm² M8,Generic,Battery connections,440,Berlin-Tempelhof,1.20,active
+EV-CABLE-T2-5M,EV Cable Type 2 5m 22kW,Generic,All EVSE,31,Munich-Riem,148.00,active
+EV-CHARGER-WALLBOX-22KW,Wallbox 22kW Type 2,Empire,EV charging,30,Munich-Riem,890.00,active
+EV-RCD-TYPE-B,RCD Type B 4-pole,Generic,EV chargers,24,Munich-Riem,178.00,active
+METER-MID-3PH,MID-certified 3-phase meter,Generic,Energy monitoring,57,Berlin-Tempelhof,98.00,active
+METER-CT-100A,CT Clamp 100A,Generic,Energy monitoring,142,Berlin-Tempelhof,32.00,active
+SMOKE-DETECT-WLAN,WLAN Smoke Detector,Generic,Battery rooms,68,Berlin-Tempelhof,42.00,active
+RCD-40A-30MA,RCD 4P 40A 30mA,Generic,All AC installs,89,Berlin-Tempelhof,48.00,active
+MCB-C16-1P,MCB C16 1-pole,Generic,All AC installs,520,Berlin-Tempelhof,8.50,active
+MCB-C20-3P,MCB C20 3-pole,Generic,All AC installs,180,Berlin-Tempelhof,28.00,active
+ENC-DOC-FOLDER,Documentation Folder,Empire,Standard install,310,Berlin-Tempelhof,4.20,active
+ENC-NETZA-SEAL,Plombierung Seal Set,Empire,Compliance,1200,Berlin-Tempelhof,1.10,active
+HUA-LUNA-MOD-5KWH,LUNA Battery Module 5kWh,Huawei,LUNA2000,30,Berlin-Tempelhof,1450.00,active
+HUA-LUNA-PCS,LUNA Power Control Unit,Huawei,LUNA2000,20,Berlin-Tempelhof,890.00,active
+HUA-DONGLE-4G,Smart Dongle 4G,Huawei,SUN2000 series,33,Berlin-Tempelhof,128.00,active
+SMA-ENERGY-METER,SMA Energy Meter,SMA,Sunny Boy + Tripower,28,Hamburg-Altona,168.00,active
+SMA-HOMEMANAGER-2,Sunny Home Manager 2.0,SMA,SMA ecosystem,35,Hamburg-Altona,398.00,active
+GOO-EZLOGGER,EzLogger Pro,Goodwe,Goodwe ecosystem,22,Berlin-Tempelhof,158.00,active
+GOO-LYNX-3KW,Lynx Home U 3kWh module,Goodwe,Lynx Home U battery,25,Berlin-Tempelhof,1290.00,active
+ENC-ROOF-HOOK-PR,Roof Hook Pantile,K2 Systems,Pitched roof,1100,Munich-Riem,3.40,active
+ENC-ROOF-HOOK-FL,Roof Hook Flat Roof,K2 Systems,Flat roof ballasted,420,Munich-Riem,4.10,active
+ENC-EARTH-CLAMP,Earth Bonding Clamp,Generic,Roof grounding,890,Munich-Riem,2.30,active
+ENC-LIGHTNING-SPD,Surge Protection SPD Type 2,Dehn,All AC installs,76,Hamburg-Altona,124.00,active
+WIFI-EXTENDER-OUT,Outdoor WiFi Extender,Generic,Field connectivity,40,Berlin-Tempelhof,68.00,active
+TOOL-MEGGER-1KV,Insulation Tester 1kV,Megger,Field tools,15,Berlin-Tempelhof,460.00,active
+TOOL-CLAMP-METER,True-RMS Clamp Meter,Fluke,Field tools,20,Berlin-Tempelhof,290.00,active
+TOOL-IR-CAMERA,Thermal Imaging Camera,Flir,Field tools,10,Berlin-Tempelhof,1290.00,active
+PPE-HARNESS,Roof Safety Harness,Generic,PPE,42,Munich-Riem,148.00,active
+PPE-HELMET,Safety Helmet,Generic,PPE,86,Munich-Riem,28.00,active
+PPE-GLOVES-INSULATED,Insulated Gloves Class 0,Generic,PPE,124,Munich-Riem,38.00,active
+LABEL-PV-WARNING,PV Warning Label Pack,Empire,Compliance,2400,Berlin-Tempelhof,0.80,active
+LABEL-DC-LIVE,DC Live Warning Label,Empire,Compliance,1800,Berlin-Tempelhof,0.60,active
+ZIPTIE-UV-300MM,UV-resistant Cable Tie 300mm,Generic,Cable management,9800,Berlin-Tempelhof,0.10,active
+ZIPTIE-UV-200MM,UV-resistant Cable Tie 200mm,Generic,Cable management,12400,Berlin-Tempelhof,0.08,active
+SOLAR-CONDUIT-25M,Solar Conduit 25mm 25m,Generic,Cable protection,68,Munich-Riem,42.00,active
+SEAL-ROOF-EPDM,EPDM Roof Sealant Tube,Generic,Roof penetrations,210,Munich-Riem,12.00,active
+ANTI-SLIP-PAD,Anti-slip Roof Pad,Generic,PPE,140,Munich-Riem,18.00,active
+DC-DISCO-1000V,DC Disconnector 1000V,Generic,String safety,38,Berlin-Tempelhof,84.00,active
+HUA-PIDBOX,Huawei PID Recovery Box,Huawei,SUN2000 commercial,20,Berlin-Tempelhof,310.00,active

@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empire Smart-Dispatcher</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    .skeleton { animation: pulse 1.5s ease-in-out infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+  </style>
+</head>
+<body class="bg-stone-50">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react">
+    const { useState, useEffect, useMemo } = React;
+    const API = ""; // same origin
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Helpers
+    // ─────────────────────────────────────────────────────────────────────
+    const cls = (...xs) => xs.filter(Boolean).join(" ");
+
+    const SEVERITY_STYLE = {
+      high:   "bg-rose-100 text-rose-700 border-rose-200",
+      medium: "bg-amber-100 text-amber-700 border-amber-200",
+      low:    "bg-stone-100 text-stone-700 border-stone-200",
+    };
+    const STATUS_STYLE = {
+      pending_approval: "bg-amber-100 text-amber-700 border-amber-200",
+      scheduled:        "bg-emerald-100 text-emerald-700 border-emerald-200",
+      rejected:         "bg-rose-100 text-rose-700 border-rose-200",
+      no_dispatch:      "bg-stone-100 text-stone-700 border-stone-200",
+    };
+    const STATUS_LABEL = {
+      pending_approval: "Pending approval",
+      scheduled:        "Scheduled ✓",
+      rejected:         "Rejected",
+      no_dispatch:      "No dispatch needed",
+    };
+
+    function Badge({ tone = "neutral", children }) {
+      const styles = {
+        neutral:  "bg-stone-100 text-stone-700 border-stone-200",
+        ok:       "bg-emerald-100 text-emerald-700 border-emerald-200",
+        warn:     "bg-orange-100 text-orange-700 border-orange-200",
+        danger:   "bg-rose-100 text-rose-700 border-rose-200",
+        info:     "bg-blue-50 text-blue-700 border-blue-200",
+      };
+      return (
+        <span className={cls("inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border", styles[tone] || styles.neutral)}>
+          {children}
+        </span>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Header
+    // ─────────────────────────────────────────────────────────────────────
+    function Header({ onRefresh, jobsCount }) {
+      return (
+        <header className="h-14 border-b border-stone-200 bg-white flex items-center justify-between px-6 shrink-0">
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-md bg-stone-900 flex items-center justify-center text-white text-sm font-bold">E</div>
+            <div>
+              <div className="text-sm font-semibold text-stone-900">Empire Smart-Dispatcher</div>
+              <div className="text-xs text-stone-500">Triage console · {jobsCount} job{jobsCount !== 1 ? "s" : ""} in queue</div>
+            </div>
+          </div>
+          <button
+            onClick={onRefresh}
+            className="text-xs text-stone-600 hover:text-stone-900 px-3 py-1.5 rounded-md border border-stone-200 hover:bg-stone-50 transition"
+          >
+            ↻ Refresh
+          </button>
+        </header>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Sidebar / inbox
+    // ─────────────────────────────────────────────────────────────────────
+    function Sidebar({ tickets, selectedId, onSelect }) {
+      return (
+        <aside className="w-80 shrink-0 border-r border-stone-200 bg-white overflow-y-auto">
+          <div className="px-4 pt-4 pb-2 sticky top-0 bg-white border-b border-stone-100">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-stone-500">Inbox</h2>
+            <p className="text-xs text-stone-400 mt-0.5">{tickets.length} open ticket{tickets.length !== 1 ? "s" : ""}</p>
+          </div>
+          <ul>
+            {tickets.map(t => (
+              <li key={t.ticket_id}>
+                <button
+                  onClick={() => onSelect(t.ticket_id)}
+                  className={cls(
+                    "w-full text-left px-4 py-3 border-b border-stone-100 hover:bg-stone-50 transition",
+                    selectedId === t.ticket_id && "bg-blue-50 hover:bg-blue-50 border-l-2 border-l-blue-600"
+                  )}
+                >
+                  <div className="flex items-center justify-between gap-2 mb-1">
+                    <span className="text-xs font-mono text-stone-500">{t.ticket_id}</span>
+                    <span className="text-[10px] text-stone-400">{t.customer_region}</span>
+                  </div>
+                  <div className="text-sm font-medium text-stone-900 truncate">{t.subject || "(no subject)"}</div>
+                  <div className="text-xs text-stone-500 truncate mt-0.5">{t.customer_name}</div>
+                </button>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Empty state
+    // ─────────────────────────────────────────────────────────────────────
+    function EmptyState() {
+      return (
+        <div className="flex-1 flex items-center justify-center text-stone-400">
+          <div className="text-center">
+            <div className="text-5xl mb-4">←</div>
+            <div className="text-sm">Select a ticket from the inbox to begin</div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Ticket detail card
+    // ─────────────────────────────────────────────────────────────────────
+    function TicketCard({ ticket }) {
+      return (
+        <div className="bg-white border border-stone-200 rounded-lg p-5">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <div className="text-xs font-mono text-stone-500 mb-1">{ticket.ticket_id}</div>
+              <h2 className="text-lg font-semibold text-stone-900">{ticket.subject || "(no subject)"}</h2>
+            </div>
+            <Badge tone="info">{ticket.customer_region}</Badge>
+          </div>
+          <div className="text-xs text-stone-500 mb-3">
+            From <span className="text-stone-700 font-medium">{ticket.customer_name}</span>
+            {ticket.received_at && (
+              <span className="ml-2">· {new Date(ticket.received_at).toLocaleString()}</span>
+            )}
+            {ticket.channel && <span className="ml-2">· via {ticket.channel}</span>}
+          </div>
+          <p className="text-sm text-stone-700 leading-relaxed whitespace-pre-wrap">{ticket.body}</p>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Plan card sections
+    // ─────────────────────────────────────────────────────────────────────
+    function Section({ label, children, accent }) {
+      return (
+        <div className="border-t border-stone-100 px-5 py-4">
+          <div className="text-[10px] font-semibold uppercase tracking-wider text-stone-500 mb-2">
+            {label}
+          </div>
+          {children}
+        </div>
+      );
+    }
+
+    function PlanCard({ plan, onApprove, onReject, acting }) {
+      const diag = plan.diagnosis || {};
+      const part = plan.part || {};
+      const tech = plan.technician || {};
+      const status = plan.job_status || "pending_approval";
+      const statusLocked = status === "scheduled" || status === "rejected";
+
+      return (
+        <div className="bg-white border border-stone-200 rounded-lg overflow-hidden">
+          {/* Header */}
+          <div className="px-5 py-4 bg-stone-50 border-b border-stone-200">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <div className="text-xs font-mono text-stone-500 mb-0.5">
+                  {plan.job_id || "JOB-?"} · {plan.ticket_id}
+                </div>
+                <h3 className="text-sm font-semibold text-stone-900">Agent's proposed plan</h3>
+              </div>
+              <div className="flex items-center gap-2">
+                {plan.iterations_used > 1 && (
+                  <Badge tone="info">↻ self-corrected · {plan.iterations_used} iter</Badge>
+                )}
+                <span className={cls(
+                  "inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium border",
+                  STATUS_STYLE[status] || STATUS_STYLE.pending_approval
+                )}>
+                  {STATUS_LABEL[status] || status}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* Diagnosis */}
+          <Section label="Diagnosis">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {diag.error_code && (
+                <span className="font-mono text-xs px-2 py-0.5 bg-stone-100 rounded text-stone-700">
+                  {diag.error_code}
+                </span>
+              )}
+              {diag.manufacturer && (
+                <span className="text-xs text-stone-600">{diag.manufacturer}</span>
+              )}
+              {diag.severity && (
+                <span className={cls(
+                  "inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border",
+                  SEVERITY_STYLE[diag.severity] || SEVERITY_STYLE.low
+                )}>
+                  {diag.severity}
+                </span>
+              )}
+            </div>
+            <p className="text-sm text-stone-700 leading-relaxed">
+              {diag.summary || <span className="italic text-stone-400">(no diagnosis summary)</span>}
+            </p>
+          </Section>
+
+          {/* Part */}
+          <Section label="Part">
+            <div className="flex flex-wrap items-center gap-2 mb-2">
+              {part.part_id ? (
+                <span className="font-mono text-xs px-2 py-0.5 bg-stone-100 rounded text-stone-700">
+                  {part.part_id}
+                </span>
+              ) : (
+                <span className="text-xs italic text-stone-400">no part required</span>
+              )}
+              {part.part_id && (part.in_stock
+                ? <Badge tone="ok">✓ in stock</Badge>
+                : <Badge tone="warn">✗ {part.status || "out of stock"}</Badge>
+              )}
+            </div>
+            {part.inventory_note && (
+              <p className="text-xs text-stone-500 leading-relaxed">{part.inventory_note}</p>
+            )}
+          </Section>
+
+          {/* Workaround (only when set) */}
+          {plan.workaround && (
+            <Section label="Workaround applied">
+              <div className="bg-orange-50 border-l-2 border-orange-300 px-3 py-2 rounded-r">
+                <p className="text-sm text-stone-700 leading-relaxed">{plan.workaround}</p>
+              </div>
+            </Section>
+          )}
+
+          {/* Technician (primary) */}
+          <Section label="Technician · primary">
+            {tech.tech_id ? (
+              <>
+                <div className="flex flex-wrap items-center gap-2 mb-1">
+                  <span className="font-mono text-xs px-2 py-0.5 bg-stone-100 rounded text-stone-700">
+                    {tech.tech_id}
+                  </span>
+                  {tech.region && (
+                    <Badge tone="info">📍 {tech.region}</Badge>
+                  )}
+                  {tech.scheduled_date && (
+                    <Badge tone="info">📅 {tech.scheduled_date}</Badge>
+                  )}
+                </div>
+                <p className="text-xs text-stone-500 leading-relaxed">{tech.rationale}</p>
+              </>
+            ) : (
+              <p className="text-xs italic text-stone-400">no technician assigned</p>
+            )}
+          </Section>
+
+          {/* Backup technicians */}
+          {Array.isArray(plan.backup_technicians) && plan.backup_technicians.length > 0 && (
+            <Section label={`Backup options · ${plan.backup_technicians.length}`}>
+              <div className="space-y-2">
+                {plan.backup_technicians.map((b, i) => (
+                  <div key={b.tech_id || i} className="flex items-start gap-3 p-3 rounded-md bg-stone-50 border border-stone-200">
+                    <div className="w-7 h-7 rounded-full bg-stone-300 text-white flex items-center justify-center text-[11px] font-bold shrink-0">
+                      #{i + 2}
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex flex-wrap items-center gap-2 mb-1">
+                        <span className="text-sm font-medium text-stone-900">{b.name || "—"}</span>
+                        <span className="font-mono text-[11px] px-1.5 py-0.5 bg-white rounded text-stone-600 border border-stone-200">{b.tech_id}</span>
+                        <Badge tone="info">📍 {b.region}</Badge>
+                        {b.next_available && (
+                          <span className="text-[11px] text-stone-500">📅 {b.next_available}</span>
+                        )}
+                      </div>
+                      {(b.certifications || b.skills) && (
+                        <div className="text-[11px] text-stone-500 mb-1">
+                          {b.certifications && <span>certs: {b.certifications.join(", ")}</span>}
+                          {b.certifications && b.skills && " · "}
+                          {b.skills && <span>skills: {b.skills.join(", ")}</span>}
+                        </div>
+                      )}
+                      {b.rationale && (
+                        <p className="text-[11px] text-stone-500 italic leading-relaxed">{b.rationale}</p>
+                      )}
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-stone-400 mt-2">
+                If the primary tech can't make it, manually reassign the job to one of these.
+              </p>
+            </Section>
+          )}
+
+          {/* Action footer */}
+          <div className="px-5 py-4 bg-stone-50 border-t border-stone-200 flex items-center justify-between">
+            <div className="text-xs text-stone-500">
+              {statusLocked
+                ? <span>Decision recorded. No further action available.</span>
+                : <span>Review the plan and decide.</span>}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={onReject}
+                disabled={statusLocked || acting || !plan.job_id}
+                className="px-4 py-2 text-sm font-medium text-rose-700 bg-white border border-rose-200 rounded-md hover:bg-rose-50 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                {acting === "reject" ? "Rejecting…" : "Reject"}
+              </button>
+              <button
+                onClick={onApprove}
+                disabled={statusLocked || acting || !plan.job_id}
+                className="px-4 py-2 text-sm font-medium text-white bg-emerald-600 rounded-md hover:bg-emerald-700 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              >
+                {acting === "approve" ? "Approving…" : "✓ Approve & dispatch"}
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Run-agent button
+    // ─────────────────────────────────────────────────────────────────────
+    function RunBar({ running, error, onRun }) {
+      return (
+        <div className="bg-white border border-stone-200 rounded-lg p-5">
+          <div className="flex items-center justify-between">
+            <div>
+              <h3 className="text-sm font-semibold text-stone-900">Run the dispatcher agent</h3>
+              <p className="text-xs text-stone-500 mt-0.5">
+                Triage → Research (RAG) → Inventory → Routing → Plan
+              </p>
+            </div>
+            <button
+              onClick={onRun}
+              disabled={running}
+              className="px-5 py-2.5 text-sm font-medium text-white bg-blue-600 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+            >
+              {running ? "Running…" : "▶ Run agent"}
+            </button>
+          </div>
+          {error && (
+            <div className="mt-3 text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded px-3 py-2">
+              {error}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    function PlanSkeleton() {
+      return (
+        <div className="bg-white border border-stone-200 rounded-lg p-5 skeleton">
+          <div className="space-y-3">
+            <div className="h-4 bg-stone-200 rounded w-1/3" />
+            <div className="h-3 bg-stone-100 rounded w-2/3" />
+            <div className="h-3 bg-stone-100 rounded w-1/2" />
+            <div className="h-3 bg-stone-100 rounded w-3/4" />
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Toast
+    // ─────────────────────────────────────────────────────────────────────
+    function Toast({ tone, message, onClose }) {
+      useEffect(() => {
+        const t = setTimeout(onClose, 4000);
+        return () => clearTimeout(t);
+      }, []);
+      const styles = {
+        ok:    "bg-emerald-600 text-white",
+        warn:  "bg-orange-600 text-white",
+        error: "bg-rose-600 text-white",
+        info:  "bg-stone-900 text-white",
+      };
+      return (
+        <div className="fixed bottom-6 right-6 z-50">
+          <div className={cls("px-4 py-3 rounded-lg shadow-lg text-sm flex items-center gap-3", styles[tone] || styles.info)}>
+            <span>{message}</span>
+            <button onClick={onClose} className="opacity-70 hover:opacity-100">✕</button>
+          </div>
+        </div>
+      );
+    }
+
+    // ─────────────────────────────────────────────────────────────────────
+    // Root app
+    // ─────────────────────────────────────────────────────────────────────
+    function App() {
+      const [tickets, setTickets] = useState([]);
+      const [jobs, setJobs] = useState([]);
+      const [selectedId, setSelectedId] = useState(null);
+      const [plan, setPlan] = useState(null);
+      const [running, setRunning] = useState(false);
+      const [acting, setActing] = useState(null);
+      const [runError, setRunError] = useState(null);
+      const [toast, setToast] = useState(null);
+
+      const selected = useMemo(
+        () => tickets.find(t => t.ticket_id === selectedId) || null,
+        [tickets, selectedId]
+      );
+
+      const refresh = async () => {
+        try {
+          const [tRes, jRes] = await Promise.all([
+            fetch(`${API}/tickets`),
+            fetch(`${API}/jobs`),
+          ]);
+          setTickets(await tRes.json());
+          setJobs(await jRes.json());
+        } catch (e) {
+          setToast({ tone: "error", message: "Failed to load data: " + e.message });
+        }
+      };
+
+      useEffect(() => { refresh(); }, []);
+
+      const selectTicket = (id) => {
+        setSelectedId(id);
+        setPlan(null);
+        setRunError(null);
+      };
+
+      const runAgent = async () => {
+        if (!selected) return;
+        setRunning(true);
+        setPlan(null);
+        setRunError(null);
+        try {
+          const res = await fetch(`${API}/tickets/triage`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ticket_id: selected.ticket_id,
+              customer_name: selected.customer_name,
+              customer_region: selected.customer_region,
+              subject: selected.subject,
+              body: selected.body,
+            }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          if (!data.plan) throw new Error("Agent returned no plan");
+          setPlan(data.plan);
+          await refresh();  // jobs queue updated
+          setToast({ tone: "info", message: `Plan ready for ${selected.ticket_id}` });
+        } catch (e) {
+          setRunError(e.message);
+        } finally {
+          setRunning(false);
+        }
+      };
+
+      const act = async (action) => {
+        if (!plan?.job_id) return;
+        setActing(action);
+        try {
+          const res = await fetch(`${API}/jobs/${plan.job_id}/${action}`, { method: "POST" });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const updated = await res.json();
+          setPlan(p => ({ ...p, job_status: updated.status }));
+          await refresh();
+          setToast({
+            tone: action === "approve" ? "ok" : "warn",
+            message: `${plan.job_id} ${action === "approve" ? "approved · technician dispatched" : "rejected · returned for manual handling"}`,
+          });
+        } catch (e) {
+          setToast({ tone: "error", message: `Action failed: ${e.message}` });
+        } finally {
+          setActing(null);
+        }
+      };
+
+      const pendingCount = jobs.filter(j => j.status === "pending_approval").length;
+
+      return (
+        <div className="h-screen flex flex-col">
+          <Header onRefresh={refresh} jobsCount={pendingCount} />
+          <div className="flex-1 flex overflow-hidden">
+            <Sidebar tickets={tickets} selectedId={selectedId} onSelect={selectTicket} />
+            <main className="flex-1 overflow-y-auto p-6">
+              {!selected ? (
+                <EmptyState />
+              ) : (
+                <div className="max-w-3xl mx-auto space-y-4">
+                  <TicketCard ticket={selected} />
+                  {!plan && !running && (
+                    <RunBar running={running} error={runError} onRun={runAgent} />
+                  )}
+                  {running && <PlanSkeleton />}
+                  {plan && (
+                    <PlanCard
+                      plan={plan}
+                      acting={acting}
+                      onApprove={() => act("approve")}
+                      onReject={() => act("reject")}
+                    />
+                  )}
+                  {plan && (
+                    <button
+                      onClick={() => { setPlan(null); setRunError(null); }}
+                      className="text-xs text-stone-500 hover:text-stone-900 underline"
+                    >
+                      ← run again
+                    </button>
+                  )}
+                </div>
+              )}
+            </main>
+          </div>
+          {toast && <Toast {...toast} onClose={() => setToast(null)} />}
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

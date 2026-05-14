@@ -1,0 +1,33 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Env + secrets
+.env
+.env.local
+
+# Local data artifacts
+data/chroma/
+data/enpal.db
+*.sqlite
+*.sqlite3
+
+# LangSmith local cache
+.langsmith/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Frontend (when added)
+frontend/node_modules/
+frontend/.next/
+frontend/out/

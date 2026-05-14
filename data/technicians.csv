@@ -1,0 +1,25 @@
+tech_id,name,region,certifications,skill_tags,languages,weekly_capacity_hours,next_available
+T001,Lukas Becker,Berlin,Huawei|SMA|Goodwe,solar|battery|hybrid,de|en,40,2026-05-05
+T002,Sofia Hartmann,Berlin,Vaillant|Viessmann,heatpump|refrigerant|brazing,de|en,38,2026-05-04
+T003,Markus Weber,Berlin,Huawei|Fronius,solar|optimizer|commissioning,de,40,2026-05-06
+T004,Aylin Demir,Berlin,SMA|Huawei,solar|battery,de|en|tr,36,2026-05-04
+T005,Jonas Klein,Munich,Huawei|SMA|Goodwe,solar|hybrid,de|en,40,2026-05-05
+T006,Stefan Maier,Munich,Vaillant|Bosch,heatpump|hydronic,de,38,2026-05-04
+T007,Eva Schneider,Munich,Fronius|Goodwe|SolarEdge,solar|optimizer,de|en,40,2026-05-07
+T008,Karim Yilmaz,Munich,Huawei|Viessmann,solar|heatpump|hybrid,de|en|tr,40,2026-05-06
+T009,Hannah Fischer,Hamburg,SMA|Huawei,solar|commissioning,de|en,40,2026-05-04
+T010,Tobias Roth,Hamburg,Vaillant|Stiebel|Viessmann,heatpump|refrigerant,de,38,2026-05-05
+T011,Lena Vogel,Hamburg,Huawei|Goodwe,solar|battery|hybrid,de|en,40,2026-05-05
+T012,Niklas Berger,Hamburg,SMA|Fronius,solar|optimizer,de,38,2026-05-08
+T013,Mira Albrecht,Cologne,Huawei|SMA|Goodwe,solar|hybrid|battery,de|en,40,2026-05-04
+T014,Felix Wolf,Cologne,Vaillant|Viessmann,heatpump|brazing,de,38,2026-05-05
+T015,Pia Lehmann,Cologne,Fronius|SolarEdge,solar|commissioning,de|en,40,2026-05-06
+T016,Daniel Krüger,Frankfurt,Huawei|Viessmann,solar|heatpump|hybrid,de|en,40,2026-05-04
+T017,Anika Bauer,Frankfurt,SMA|Goodwe,solar|battery,de,38,2026-05-05
+T018,Max Hoffmann,Frankfurt,Vaillant|Bosch,heatpump|refrigerant,de,40,2026-05-06
+T019,Valentina Rossi,Stuttgart,Huawei|SMA|Fronius,solar|hybrid,de|en|it,40,2026-05-05
+T020,Jakob Lang,Stuttgart,Vaillant|Viessmann|Stiebel,heatpump|brazing|hydronic,de,38,2026-05-04
+T021,Yusra Khan,Stuttgart,Huawei|Goodwe,solar|battery|hybrid,de|en|ur,40,2026-05-07
+T022,Paul Neumann,Düsseldorf,SMA|Fronius|Huawei,solar|commissioning,de,40,2026-05-04
+T023,Lina Schmitt,Düsseldorf,Vaillant|Viessmann,heatpump|hydronic,de|en,38,2026-05-05
+T024,Kemal Aydin,Düsseldorf,Huawei|Goodwe,solar|hybrid,de|tr,40,2026-05-06

@@ -1,0 +1,30 @@
+# --- Core agent stack ---
+claude-agent-sdk>=0.1.0
+anthropic>=0.40.0
+
+# --- Orchestration ---
+langgraph>=0.2.50
+langchain-core>=0.3.0
+langsmith>=0.1.140
+
+# --- MCP server ---
+mcp>=1.0.0
+fastmcp>=0.4.0
+
+# --- RAG ---
+chromadb>=0.5.0
+sentence-transformers>=3.0.0
+pypdf>=5.0.0
+
+# --- Data + API ---
+pandas>=2.2.0
+fastapi>=0.115.0
+uvicorn[standard]>=0.32.0
+pydantic>=2.9.0
+pydantic-settings>=2.5.0
+
+# --- Utilities ---
+python-dotenv>=1.0.0
+langdetect>=1.0.9
+rich>=13.9.0          # pretty CLI demo output
+typer>=0.12.0         # demo script CLI
