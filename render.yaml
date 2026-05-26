@@ -8,15 +8,8 @@ services:
     envVars:
       - key: ANTHROPIC_API_KEY
         sync: false        # set manually in Render dashboard — never commit this
-      - key: DATA_DIR
-        value: /data       # points to the persistent disk mounted below
       - key: PORT
         value: 8000
-
-    disk:
-      name: dispatcher-data
-      mountPath: /data
-      sizeGB: 1            # holds chroma index + sqlite + jobs.json (~200MB typical)
 
     # On first deploy, build the ChromaDB index from the manuals.
     # Safe to re-run — chroma skips docs it has already embedded.
