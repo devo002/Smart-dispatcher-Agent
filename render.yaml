@@ -11,7 +11,3 @@ services:
       - key: PORT
         value: 8000
 
-    # On first deploy, build the ChromaDB index from the manuals.
-    # Safe to re-run — chroma skips docs it has already embedded.
-    preDeployCommand: >
-      python -m src.enpal_dispatcher.ingest.build_index

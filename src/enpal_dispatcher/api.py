@@ -28,6 +28,7 @@ from pydantic import BaseModel, Field
 
 from .agent import triage_ticket, triage_ticket_astream
 from .config import REPO_ROOT, settings
+from .ingest.build_index import build as build_index
 from .tools import CheckInventoryInput, check_inventory
 from .tools.schedule_visit import JOBS_FILE
 
@@ -44,6 +45,17 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+
+@app.on_event("startup")
+def _ensure_index():
+    """Build the ChromaDB index on first startup if it doesn't exist yet."""
+    import chromadb
+    try:
+        client = chromadb.PersistentClient(path=str(settings.chroma_persist_dir))
+        client.get_collection("enpal_kb")
+    except Exception:
+        build_index()
 
 
 # ---------------------------------------------------------------------------
