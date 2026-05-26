@@ -41,7 +41,6 @@ class Settings(BaseSettings):
 
     # --- Models ---
     claude_model: str = "claude-sonnet-4-6"
-    embedding_model: str = "sentence-transformers/all-MiniLM-L6-v2"
 
     # --- Mutable paths (go to persistent disk in production) ---
     chroma_persist_dir: Path = _DATA_DIR / "chroma"

@@ -5,7 +5,7 @@ from __future__ import annotations
 from functools import lru_cache
 
 import chromadb
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 from pydantic import BaseModel, Field
 
 from ..config import settings
@@ -32,7 +32,7 @@ class SearchManualsOutput(BaseModel):
 @lru_cache(maxsize=1)
 def _collection():
     client = chromadb.PersistentClient(path=str(settings.chroma_persist_dir))
-    embed_fn = SentenceTransformerEmbeddingFunction(model_name=settings.embedding_model)
+    embed_fn = DefaultEmbeddingFunction()
     return client.get_collection(name=COLLECTION_NAME, embedding_function=embed_fn)
 
 

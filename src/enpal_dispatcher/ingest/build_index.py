@@ -10,7 +10,7 @@ from __future__ import annotations
 from pathlib import Path
 
 import chromadb
-from chromadb.utils.embedding_functions import SentenceTransformerEmbeddingFunction
+from chromadb.utils.embedding_functions import DefaultEmbeddingFunction
 from rich.console import Console
 
 from ..config import settings
@@ -32,7 +32,7 @@ def _gather_chunks() -> list[Chunk]:
 def build() -> int:
     settings.chroma_persist_dir.mkdir(parents=True, exist_ok=True)
     client = chromadb.PersistentClient(path=str(settings.chroma_persist_dir))
-    embed_fn = SentenceTransformerEmbeddingFunction(model_name=settings.embedding_model)
+    embed_fn = DefaultEmbeddingFunction()
 
     # Recreate collection so reruns are idempotent.
     try:
