@@ -13,6 +13,7 @@ venv/
 # Local data artifacts
 data/chroma/
 data/enpal.db
+data/jobs.json
 *.sqlite
 *.sqlite3
 

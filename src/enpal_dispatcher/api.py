@@ -62,7 +62,8 @@ class TicketPayload(BaseModel):
 # UI
 # ---------------------------------------------------------------------------
 
-DASHBOARD_HTML = REPO_ROOT / "frontend" / "dispatcher.html"
+# Resolve relative to this file so it works both locally and after pip install
+DASHBOARD_HTML = Path(__file__).resolve().parent.parent.parent / "frontend" / "dispatcher.html"
 
 
 @app.get("/", include_in_schema=False)
@@ -195,3 +196,9 @@ def approve_job(job_id: str):
 def reject_job(job_id: str):
     """Dispatcher rejects the agent's plan: status flips to 'rejected'."""
     return _set_job_status(job_id, "rejected", "rejected_by_dispatcher")
+
+
+@app.post("/jobs/{job_id}/reset")
+def reset_job(job_id: str):
+    """Reset a job back to pending_approval so it can be re-reviewed."""
+    return _set_job_status(job_id, "pending_approval", "reset_by_dispatcher")
