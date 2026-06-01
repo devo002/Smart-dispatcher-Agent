@@ -14,8 +14,8 @@ import pandas as pd
 from rich.console import Console
 from rich.table import Table
 
-from src.enpal_dispatcher.config import settings
-from src.enpal_dispatcher.tools import CheckInventoryInput, check_inventory
+from src.empire_dispatcher.config import settings
+from src.empire_dispatcher.tools import CheckInventoryInput, check_inventory
 
 console = Console()
 

@@ -1,7 +1,7 @@
 # Manuals corpus
 
 Drop real PDF inverter / heat-pump manuals here. The ingestion pipeline
-(`src/enpal_dispatcher/ingest/build_index.py`) will:
+(`src/empire_dispatcher/ingest/build_index.py`) will:
 
 1. Walk every `*.pdf` in this folder
 2. Extract text with `pypdf`

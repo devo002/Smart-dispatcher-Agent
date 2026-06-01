@@ -24,8 +24,8 @@ from rich.console import Console
 from rich.panel import Panel
 from rich.tree import Tree
 
-from src.enpal_dispatcher.agent import triage_ticket_stream
-from src.enpal_dispatcher.config import settings
+from src.empire_dispatcher.agent import triage_ticket_stream
+from src.empire_dispatcher.config import settings
 
 
 console = Console()

@@ -15,8 +15,8 @@ from pathlib import Path
 from rich.console import Console
 from rich.table import Table
 
-from src.enpal_dispatcher.agent import triage_ticket
-from src.enpal_dispatcher.config import settings
+from src.empire_dispatcher.agent import triage_ticket
+from src.empire_dispatcher.config import settings
 
 
 SEVERITY_RANK = {"low": 0, "medium": 1, "high": 2}

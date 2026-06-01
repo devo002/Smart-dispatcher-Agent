@@ -6,7 +6,7 @@ dashboard / SSE endpoint. The latter is what powers the "watch the agent think"
 moment in the demo.
 
 Usage:
-    python -m src.enpal_dispatcher.agent --ticket-id T-10003
+    python -m src.empire_dispatcher.agent --ticket-id T-10003
 """
 
 from __future__ import annotations

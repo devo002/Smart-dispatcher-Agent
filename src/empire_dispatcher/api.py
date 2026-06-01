@@ -53,7 +53,7 @@ def _ensure_index():
     import chromadb
     try:
         client = chromadb.PersistentClient(path=str(settings.chroma_persist_dir))
-        client.get_collection("enpal_kb")
+        client.get_collection("empire_kb")
     except Exception:
         build_index()
 

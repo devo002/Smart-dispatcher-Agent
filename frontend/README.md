@@ -21,4 +21,4 @@ npm install lucide-react @radix-ui/react-dialog
 Then point `NEXT_PUBLIC_API_BASE` at `http://localhost:8000`.
 
 For an interview, this can stay a stub — the value is the streaming backend +
-the LangSmith trace, both already wired in `src/enpal_dispatcher/api.py`.
+the LangSmith trace, both already wired in `src/empire_dispatcher/api.py`.

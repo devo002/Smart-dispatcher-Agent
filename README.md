@@ -58,7 +58,7 @@ Mcp/
 │   ├── technicians.csv         # Field tech roster (region, certs, availability)
 │   └── tickets/tickets.json    # 25 mixed-language messy customer tickets
 │
-├── src/enpal_dispatcher/
+├── src/empire_dispatcher/
 │   ├── config.py               # Paths, model names, env loading
 │   ├── ingest/                 # PDF chunking + Chroma index build
 │   ├── tools/                  # Pure-Python tool implementations
@@ -90,10 +90,10 @@ create .env and enter the Anthropic API key
 
 # 3. Seed synthetic data + build the RAG index
 python -m scripts.seed_data
-python -m src.enpal_dispatcher.ingest.build_index
+python -m src.empire_dispatcher.ingest.build_index
 
 # 4. Run the API
-uvicorn src.enpal_dispatcher.api:app --reload
+uvicorn src.empire_dispatcher.api:app --reload
 
 # 5. Try the wow-factor self-correction demo
 python -m scripts.demo_self_correction

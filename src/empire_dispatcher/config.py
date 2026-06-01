@@ -44,7 +44,7 @@ class Settings(BaseSettings):
 
     # --- Mutable paths (go to persistent disk in production) ---
     chroma_persist_dir: Path = _DATA_DIR / "chroma"
-    sqlite_db_path: Path = _DATA_DIR / "enpal.db"
+    sqlite_db_path: Path = _DATA_DIR / "empire.db"
 
     # --- Static/read-only paths (stay in repo) ---
     inventory_csv: Path = REPO_ROOT / "data" / "inventory.csv"

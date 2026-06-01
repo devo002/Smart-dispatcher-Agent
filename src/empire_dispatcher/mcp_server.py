@@ -2,7 +2,7 @@
 
 Run as a stdio MCP server (e.g. wired into Claude Desktop config) with:
 
-    python -m src.enpal_dispatcher.mcp_server
+    python -m src.empire_dispatcher.mcp_server
 """
 
 from __future__ import annotations

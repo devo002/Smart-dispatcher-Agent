@@ -2,7 +2,7 @@
 
 Run once after dropping PDFs into data/manuals/, or whenever known_issues.md changes:
 
-    python -m src.enpal_dispatcher.ingest.build_index
+    python -m src.empire_dispatcher.ingest.build_index
 """
 
 from __future__ import annotations
@@ -16,7 +16,7 @@ from rich.console import Console
 from ..config import settings
 from .chunk_pdfs import Chunk, chunk_markdown, chunk_pdf
 
-COLLECTION_NAME = "enpal_kb"
+COLLECTION_NAME = "empire_kb"
 console = Console()
 
 

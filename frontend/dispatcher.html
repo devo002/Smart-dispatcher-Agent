@@ -326,10 +326,11 @@
     // ─────────────────────────────────────────────────────────────────────
     function EmptyState() {
       return (
-        <div className="flex-1 flex items-center justify-center text-stone-400">
+        <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="text-5xl mb-4">←</div>
-            <div className="text-sm">Select a ticket from the inbox to begin</div>
+            <div className="text-5xl mb-4 text-stone-400">←</div>
+            <div className="text-base font-bold text-stone-700">Select a ticket from the inbox to begin</div>
+            <div className="text-sm text-stone-400 mt-1">Click any ticket on the left to run the agent</div>
           </div>
         </div>
       );
