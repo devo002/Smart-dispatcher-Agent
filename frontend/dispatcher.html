@@ -57,36 +57,62 @@
 
   <script>
     (function () {
-      const splash  = document.getElementById("splash");
-      const status  = document.getElementById("splash-status");
+      const splash = document.getElementById("splash");
+      const status = document.getElementById("splash-status");
+
       const messages = [
         "Connecting to server…",
         "Waking up the service…",
+        "Loading tickets…",
         "Almost there…",
         "Hang tight…",
-        "Starting up…",
       ];
       let attempt = 0;
+
+      function setStatus(text) {
+        status.style.opacity = "0";
+        setTimeout(() => { status.textContent = text; status.style.opacity = "1"; }, 200);
+      }
 
       function hideSplash() {
         splash.classList.add("fade-out");
         setTimeout(() => splash.remove(), 520);
       }
 
-      function poll() {
+      // Phase 2: health is ok, now fetch tickets + jobs until we get real data
+      function fetchData() {
+        setStatus("Loading tickets…");
+        Promise.all([fetch("/tickets"), fetch("/jobs")])
+          .then(async ([tRes, jRes]) => {
+            if (!tRes.ok || !jRes.ok) throw new Error("not ready");
+            const tickets = await tRes.json();
+            const jobs    = await jRes.json();
+            if (!tickets.length) throw new Error("empty");
+            // Hand data to React before showing the app
+            window.__PRELOADED__ = { tickets, jobs };
+            hideSplash();
+          })
+          .catch(() => {
+            attempt++;
+            setStatus(messages[Math.min(attempt, messages.length - 1)]);
+            setTimeout(fetchData, 2500);
+          });
+      }
+
+      // Phase 1: wait for health
+      function pollHealth() {
         fetch("/health")
-          .then(r => { if (r.ok) { hideSplash(); } else { retry(); } })
-          .catch(retry);
+          .then(r => { if (r.ok) { fetchData(); } else { retryHealth(); } })
+          .catch(retryHealth);
       }
 
-      function retry() {
+      function retryHealth() {
         attempt++;
-        status.textContent = messages[Math.min(attempt, messages.length - 1)];
-        setTimeout(poll, 2500);
+        setStatus(messages[Math.min(attempt, messages.length - 1)]);
+        setTimeout(pollHealth, 2500);
       }
 
-      // Give the page 300ms to render before first poll
-      setTimeout(poll, 300);
+      setTimeout(pollHealth, 300);
     })();
   </script>
 
@@ -631,8 +657,8 @@
     // Root app
     // ─────────────────────────────────────────────────────────────────────
     function App() {
-      const [tickets, setTickets] = useState([]);
-      const [jobs, setJobs] = useState([]);
+      const [tickets, setTickets] = useState((window.__PRELOADED__ || {}).tickets || []);
+      const [jobs,    setJobs]    = useState((window.__PRELOADED__ || {}).jobs    || []);
       const [selectedId, setSelectedId] = useState(null);
       const [plan, setPlan] = useState(null);
       const [planOutcome, setPlanOutcome] = useState(null); // "approved" | "rejected" | null
