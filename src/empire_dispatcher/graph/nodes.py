@@ -122,7 +122,7 @@ _ISSUE_CODE_PATTERNS = [
 ]
 _SKU_PATTERN = re.compile(r"`?([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})`?")
 _REQUIRED_PART_PATTERN = re.compile(
-    r"[Rr]equired\s+part[.:]?\s*`?([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})`?"
+    r"[Rr]equired\s+part[^a-zA-Z\n]{0,15}([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})"
 )
 _PREAMBLE_MARKERS = ("NOTE FOR REVIEWERS", "RAG corpus", "intentionally")
 
@@ -142,11 +142,6 @@ def _extract_part_id(blob: str):
     for m in _SKU_PATTERN.finditer(blob):
         token = m.group(1).rstrip("-.,;: ")
         if _looks_like_issue_code(token):
-            continue
-        start = m.start()
-        line_start = blob.rfind("\n", 0, start) + 1
-        line_prefix = blob[line_start:start].lstrip()
-        if line_prefix.startswith("##"):
             continue
         return token
     return None
@@ -201,7 +196,11 @@ def research_node(state: DispatchState) -> DispatchState:
             if _looks_like_workaround(h.text):
                 workaround_text = h.text[:500]
                 break
-    candidate_fix = result.hits[0].text[:1500] if result.hits else None
+    if iteration == 1:
+        fix_hit = next((h for h in result.hits if not _looks_like_workaround(h.text)), None) or (result.hits[0] if result.hits else None)
+    else:
+        fix_hit = result.hits[0] if result.hits else None
+    candidate_fix = fix_hit.text[:1500] if fix_hit else None
     return {
         "iteration": iteration,
         "candidate_fix": candidate_fix,
