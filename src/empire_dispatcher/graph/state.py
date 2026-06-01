@@ -37,6 +37,8 @@ class DispatchState(TypedDict, total=False):
 
     # --- Routing output ---
     chosen_tech_id: str | None
+    chosen_tech_name: str | None
+    chosen_tech_region: str | None
     scheduled_date: str | None
     routing_summary: str | None
     alternative_techs: list[dict]  # backups: top 2-3 candidates after primary
