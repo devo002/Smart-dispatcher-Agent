@@ -464,20 +464,16 @@
           {/* Technician (primary) */}
           <Section label="Technician · primary">
             {tech.tech_id ? (
-              <>
-                <div className="flex flex-wrap items-center gap-2 mb-1">
-                  <span className="font-mono text-xs px-2 py-0.5 bg-stone-100 rounded text-stone-700">
-                    {tech.tech_id}
-                  </span>
-                  {tech.region && (
-                    <Badge tone="info">📍 {tech.region}</Badge>
-                  )}
-                  {tech.scheduled_date && (
-                    <Badge tone="info">📅 {tech.scheduled_date}</Badge>
-                  )}
-                </div>
-                <p className="text-xs text-stone-500 leading-relaxed">{tech.rationale}</p>
-              </>
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-sm font-medium text-stone-900">{tech.name || tech.tech_id}</span>
+                <span className="font-mono text-[11px] px-1.5 py-0.5 bg-stone-100 rounded text-stone-600 border border-stone-200">{tech.tech_id}</span>
+                {tech.region && (
+                  <Badge tone="info">📍 {tech.region}</Badge>
+                )}
+                {tech.scheduled_date && (
+                  <Badge tone="info">📅 {tech.scheduled_date}</Badge>
+                )}
+              </div>
             ) : (
               <p className="text-xs italic text-stone-400">no technician assigned</p>
             )}

@@ -72,9 +72,6 @@ Mcp/
 └── frontend/                   # (Next.js dashboard — placeholder)
 ```
 
-## Output
-![Architecture](architecture.png)
-```
 
 ## Quick start
 

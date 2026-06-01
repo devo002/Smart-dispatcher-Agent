@@ -1,5 +1,68 @@
 [
   {
+    "ticket_id": "T-10009",
+    "received_at": "2026-05-04T10:50:00+02:00",
+    "channel": "email",
+    "customer_name": "Ms. Schneider",
+    "customer_region": "Munich",
+    "subject": "battery won't charge past 90",
+    "body": "My LFP battery won't charge above 90 percent for the last week. No specific error in the app, just stops there. System is from 2023."
+  },
+  {
+    "ticket_id": "T-10002",
+    "received_at": "2026-05-04T08:11:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Anderson",
+    "customer_region": "Munich",
+    "subject": "solar inverter not working after heavy rain",
+    "body": "Hi — my Huawei inverter has been showing a yellow LED since yesterday afternoon. The app says Error 501 DC insulation fault. We had a heavy storm on Sunday. The panels look fine from the ground but something is clearly wrong. Can someone come and check it out?"
+  },
+  {
+    "ticket_id": "T-10003",
+    "received_at": "2026-05-04T08:34:00+02:00",
+    "channel": "phone-transcript",
+    "customer_name": "Frau Müller",
+    "customer_region": "Hamburg",
+    "subject": "solar keeps cutting out around midday",
+    "body": "The system works fine in the morning and evening but between noon and 2pm it shuts off every single day. The app shows Error 602 Grid Voltage. We have a very long cable run to the meter box — about 30 meters. This has been happening all week and I'm losing a lot of generation time."
+  },
+  {
+    "ticket_id": "T-10004",
+    "received_at": "2026-05-04T09:02:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Harris",
+    "customer_region": "Berlin",
+    "subject": "inverter making a grinding noise",
+    "body": "My SMA Sunny Boy has been making a loud grinding noise for the past few days, especially when it's sunny and output is high. The app shows Warning 410 which seems to be a fan issue. It's still producing power but I'm worried it might break down. Can someone take a look?"
+  },
+  {
+    "ticket_id": "T-10005",
+    "received_at": "2026-05-04T09:18:00+02:00",
+    "channel": "email",
+    "customer_name": "The Wagners",
+    "customer_region": "Hamburg",
+    "subject": "no hot water or heating — urgent!!",
+    "body": "Please help — the heat pump stopped working this morning. No hot water and the heating is completely cold. The display is showing F.22. We have two young children at home. Is there any way someone can come out today? This is really urgent for us."
+  },
+  {
+    "ticket_id": "T-10006",
+    "received_at": "2026-05-04T09:40:00+02:00",
+    "channel": "email",
+    "customer_name": "Mr. Patel",
+    "customer_region": "Frankfurt",
+    "subject": "battery showing offline in app",
+    "body": "Hello, my hybrid solar system seems to be working fine for generation but the Goodwe app shows the battery as offline. It says Error 115. Solar is still feeding the grid normally. Not an emergency but I'd like to get it sorted — the whole point of the battery is to use overnight and right now I can't."
+  },
+  {
+    "ticket_id": "T-10007",
+    "received_at": "2026-05-04T10:05:00+02:00",
+    "channel": "email",
+    "customer_name": "The Hoffmanns",
+    "customer_region": "Stuttgart",
+    "subject": "inverter keeps restarting every few hours",
+    "body": "Our Fronius Symo inverter (6 years old) has been restarting itself every few hours since yesterday. It shows status code 1010 each time. The house lights flicker briefly when it happens. It's been going on all day and I'm worried something is seriously wrong."
+  },
+  {
     "ticket_id": "T-10001",
     "received_at": "2026-05-04T07:42:00+02:00",
     "channel": "email",
@@ -9,60 +72,6 @@
     "body": "Hallo Empire, mein Wechselrichter (Huawei) blinkt rot und in der App steht Fehler 0x0001. Wir haben heute Morgen kurz keinen Strom gehabt im ganzen Haus. Was sollen wir tun? Liebe Grüße"
   },
   {
-    "ticket_id": "T-10002",
-    "received_at": "2026-05-04T08:11:00+02:00",
-    "channel": "email",
-    "customer_name": "Mr. Anderson",
-    "customer_region": "Munich",
-    "subject": "solar inverter error 501 - urgent",
-    "body": "Hi team — Huawei inverter showing yellow LED since yesterday afternoon. App says 'Error 501 DC insulation'. We had heavy rain Sunday. Can someone come out? It's been raining a lot."
-  },
-  {
-    "ticket_id": "T-10003",
-    "received_at": "2026-05-04T08:34:00+02:00",
-    "channel": "phone-transcript",
-    "customer_name": "Frau Müller",
-    "customer_region": "Hamburg",
-    "subject": "Solaranlage geht ständig aus mittags",
-    "body": "Anlage funktioniert morgens und abends gut, aber zwischen 12 und 14 Uhr fällt sie immer aus. App zeigt Error 602 Grid Voltage. Das geht jetzt seit einer Woche so. Wir haben sehr lange Kabel zum Zählerschrank, ca 30 Meter."
-  },
-  {
-    "ticket_id": "T-10004",
-    "received_at": "2026-05-04T09:02:00+02:00",
-    "channel": "email",
-    "customer_name": "Herr Schmidt",
-    "customer_region": "Berlin",
-    "subject": "SMA macht Geräusche",
-    "body": "Mein SMA Sunny Boy macht seit ein paar Tagen ein schleifendes Geräusch, vor allem wenn die Sonne stark scheint. App zeigt Warnung 410 irgendwas mit Lüfter. Produziert noch Strom aber das Geräusch nervt."
-  },
-  {
-    "ticket_id": "T-10005",
-    "received_at": "2026-05-04T09:18:00+02:00",
-    "channel": "email",
-    "customer_name": "Familie Wagner",
-    "customer_region": "Hamburg",
-    "subject": "kein warmes wasser mehr!! Vaillant zeigt F.22",
-    "body": "Hilfe bitte!!! Heute morgen ist die Wärmepumpe ausgegangen, kein warmes Wasser, Heizung kalt. Display zeigt F.22. Wir haben zwei kleine Kinder. Können sie heute noch kommen?"
-  },
-  {
-    "ticket_id": "T-10006",
-    "received_at": "2026-05-04T09:40:00+02:00",
-    "channel": "email",
-    "customer_name": "Mr. Patel",
-    "customer_region": "Frankfurt",
-    "subject": "battery offline goodwe",
-    "body": "Hello, my hybrid system seems fine for solar but the Goodwe app shows the battery is offline. Error 115 it says. Solar is still feeding the grid normally. Not urgent but would like it fixed."
-  },
-  {
-    "ticket_id": "T-10007",
-    "received_at": "2026-05-04T10:05:00+02:00",
-    "channel": "email",
-    "customer_name": "Familie Hoffmann",
-    "customer_region": "Stuttgart",
-    "subject": "Fronius Symo Neustart alle 3 Stunden",
-    "body": "Unser Fronius Symo (jetzt 6 Jahre alt) startet sich seit gestern alle paar Stunden neu. Status 1010. Licht im Haus flackert manchmal. Was ist da los?"
-  },
-  {
     "ticket_id": "T-10008",
     "received_at": "2026-05-04T10:24:00+02:00",
     "channel": "phone-transcript",
@@ -70,15 +79,6 @@
     "customer_region": "Cologne",
     "subject": "Viessmann morgens Fehler A9",
     "body": "Wärmepumpe Viessmann Vitocal zeigt morgens A9 wenn es kalt war. Nach ein paar Stunden geht sie wieder. Heizen tut sie aber dann doch normal."
-  },
-  {
-    "ticket_id": "T-10009",
-    "received_at": "2026-05-04T10:50:00+02:00",
-    "channel": "email",
-    "customer_name": "Ms. Schneider",
-    "customer_region": "Munich",
-    "subject": "battery won't charge past 90",
-    "body": "My LFP battery won't charge above 90 percent for the last week. No specific error in the app, just stops there. System is from 2023."
   },
   {
     "ticket_id": "T-10010",
