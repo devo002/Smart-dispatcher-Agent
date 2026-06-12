@@ -214,3 +214,10 @@ def reject_job(job_id: str):
 def reset_job(job_id: str):
     """Reset a job back to pending_approval so it can be re-reviewed."""
     return _set_job_status(job_id, "pending_approval", "reset_by_dispatcher")
+
+
+@app.delete("/jobs")
+def clear_all_jobs():
+    """Wipe the jobs log — useful during development/testing."""
+    _save_jobs([])
+    return {"cleared": True}

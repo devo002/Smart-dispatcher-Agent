@@ -93,6 +93,46 @@ detector, re-braze joint and recharge with R290.
 **Required part.** `VIE-COMP-CAP-45UF`.
 **Severity.** Medium. Schedule within 5 days.
 
+## MISC-SMOKE-SMELL — Inverter / Battery Cabinet — Burning or Smoke Smell
+
+**Symptom.** Customer reports burning smell, smoke, or unusual odour near the inverter,
+battery cabinet, or distribution board. Inverter may still be running.
+**Root cause.** Possible overheating component, arcing connector, or failing capacitor.
+Must be assessed on-site before any part is identified.
+**Field fix.** Isolate the PV string disconnector and AC breaker immediately. Do not
+replace parts remotely — technician must perform visual inspection and thermal scan
+before diagnosis. Escalate to senior engineer if physical damage or scorch marks found.
+**Required part.** None until on-site assessment. Use thermal camera (TOOL-IR-CAMERA)
+during visit.
+**Severity.** High. Treat as potential fire risk until inspection clears it.
+
+## EV-WALLBOX-FAULT — Empire EV Wallbox — Charging Stopped or Wrong LED
+
+**Symptom.** EV wallbox has stopped charging the vehicle. LED shows wrong colour (blue
+instead of green, or solid red). Vehicle may report no charge added overnight.
+**Root cause.** Most common causes: RCD trip in the distribution board, loose Type 2
+cable connection, communication timeout between wallbox and vehicle, or wallbox firmware
+issue.
+**Field fix.** Check RCD-Type-B breaker in the consumer unit first — reset if tripped.
+Reseat the Type 2 cable at both ends. If LED is solid red, power-cycle the wallbox.
+If fault persists after reset, replace the RCD or the cable.
+**Required part.** None initially; `EV-RCD-TYPE-B` if RCD is faulty or `EV-CABLE-T2-5M`
+if cable is damaged.
+**Severity.** Medium. Vehicle cannot charge but no safety risk.
+
+## MISC-SPD-TRIP — Surge Protection Device (SPD) — Tripped After Lightning
+
+**Symptom.** SPD indicator in the distribution board shows red (was green); triggered
+after a nearby lightning strike or severe storm. PV system may still be running normally.
+**Root cause.** Type 2 SPD has sacrificed itself absorbing the surge transient — this is
+the device working correctly. Once tripped, the SPD no longer provides protection and
+must be replaced before the next storm.
+**Field fix.** Switch off the PV string disconnector before working in the board. Replace
+the SPD with a new Type 2 unit. Check all DC string fuses and AC breakers for damage
+while the board is open.
+**Required part.** `ENC-LIGHTNING-SPD`.
+**Severity.** Medium. System is currently unprotected but operational; schedule within 5 days.
+
 ## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip
 
 **Symptom.** Battery shows fault, refuses to charge above 90% SoC.

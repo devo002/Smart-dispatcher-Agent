@@ -119,6 +119,8 @@ _ISSUE_CODE_PATTERNS = [
     re.compile(r"^[A-Z]{2,4}-\d{2,4}$"),
     re.compile(r"^HP-[A-Z]+-[A-Z]?\d+(?:\.\d+)?$"),
     re.compile(r"^BAT-[A-Z]{2,4}-[A-Z]{2,3}$"),
+    re.compile(r"^MISC-[A-Z]+-[A-Z]+$"),        # MISC-SMOKE-SMELL, MISC-SPD-TRIP
+    re.compile(r"^EV-[A-Z]+-[A-Z]+$"),           # EV-WALLBOX-FAULT
 ]
 _SKU_PATTERN = re.compile(r"`?([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})`?")
 _REQUIRED_PART_PATTERN = re.compile(
@@ -184,12 +186,18 @@ def research_node(state: DispatchState) -> DispatchState:
         state.get("manufacturer") or "",
         state.get("raw_subject") or "",
     ]
-    query = " ".join(p for p in base_query_parts if p).strip() or state.get("raw_body","")[:200]
+    query = " ".join(p for p in base_query_parts if p).strip()
+    # When there is no error code or manufacturer, the subject alone is too vague for
+    # reliable retrieval — include the body to give the embedding model richer signal.
+    if not (state.get("error_code") or state.get("manufacturer")):
+        query = f"{query} {state.get('raw_body', '')[:200]}".strip()
     if iteration > 1:
         query = f"workaround firmware fallback alternative fix for {query}"
     result = search_manuals(SearchManualsInput(query=query, top_k=5))
-    blob = "\n".join(h.text for h in result.hits)
-    required_part_id = _extract_part_id(blob)
+    # Use only the top non-workaround hit for part extraction so that lower-ranked
+    # hits from unrelated issues cannot pollute the result.
+    top_hit = next((h for h in result.hits if not _looks_like_workaround(h.text)), None) or (result.hits[0] if result.hits else None)
+    required_part_id = _extract_part_id(top_hit.text if top_hit else "")
     workaround_text = None
     if iteration > 1:
         for h in result.hits:
@@ -197,7 +205,14 @@ def research_node(state: DispatchState) -> DispatchState:
                 workaround_text = h.text[:500]
                 break
     if iteration == 1:
-        fix_hit = next((h for h in result.hits if not _looks_like_workaround(h.text)), None) or (result.hits[0] if result.hits else None)
+        if required_part_id:
+            fix_hit = (
+                next((h for h in result.hits if required_part_id in h.text), None)
+                or next((h for h in result.hits if not _looks_like_workaround(h.text)), None)
+                or (result.hits[0] if result.hits else None)
+            )
+        else:
+            fix_hit = next((h for h in result.hits if not _looks_like_workaround(h.text)), None) or (result.hits[0] if result.hits else None)
     else:
         fix_hit = result.hits[0] if result.hits else None
     candidate_fix = fix_hit.text[:1500] if fix_hit else None

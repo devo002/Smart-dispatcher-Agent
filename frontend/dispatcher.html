@@ -161,7 +161,7 @@
     // ─────────────────────────────────────────────────────────────────────
     // Header
     // ─────────────────────────────────────────────────────────────────────
-    function Header({ onRefresh, jobsCount, onViewJobs }) {
+    function Header({ onRefresh, jobsCount, onViewJobs, onClearJobs }) {
       return (
         <header className="h-14 border-b border-stone-200 bg-white flex items-center justify-between px-6 shrink-0">
           <div className="flex items-center gap-3">
@@ -177,6 +177,13 @@
               className="text-xs text-white bg-stone-800 hover:bg-stone-900 px-3 py-1.5 rounded-md transition flex items-center gap-1.5"
             >
               <span>📋</span> View all jobs
+            </button>
+            <button
+              onClick={onClearJobs}
+              className="text-xs text-rose-600 hover:text-rose-800 px-3 py-1.5 rounded-md border border-rose-200 hover:bg-rose-50 transition"
+              title="Clear all jobs (dev only)"
+            >
+              🗑 Clear jobs
             </button>
             <button
               onClick={onRefresh}
@@ -362,6 +369,48 @@
     }
 
     // ─────────────────────────────────────────────────────────────────────
+    // Diagnosis text formatter
+    // Strips ## headings and **Bold.** markdown, renders each field label on its own line
+    function DiagnosisSummary({ text }) {
+      if (!text) return <span className="italic text-stone-400">(no diagnosis summary)</span>;
+
+      // Remove ## heading that appears at the start of RAG chunks
+      const withoutHeading = text.replace(/^##\s+[^\n*]+/, '').trim();
+
+      // Split on **Label.** or **Label:** markers
+      const parts = withoutHeading.split(/\*\*([^*\n]+?)[.:]\*\*\s*/);
+
+      // If no markers found, just render plain text
+      if (parts.length <= 1) {
+        return <p className="text-sm text-stone-700 leading-relaxed">{text}</p>;
+      }
+
+      // Build label+content pairs (parts[0] is pre-label text, skip if blank)
+      const sections = [];
+      for (let i = 1; i < parts.length - 1; i += 2) {
+        const label = parts[i];
+        const content = (parts[i + 1] || '').trim();
+        if (label && content) sections.push({ label, content });
+      }
+
+      return (
+        <div className="space-y-2 mt-1">
+          {sections.map(({ label, content }) => (
+            <div key={label} className="text-sm leading-relaxed">
+              <span className="font-semibold text-stone-800">{label}. </span>
+              <span className="text-stone-600">
+                {content.split(/`([^`]+)`/).map((chunk, idx) =>
+                  idx % 2 === 1
+                    ? <code key={idx} className="font-mono text-[11px] px-1 py-0.5 bg-stone-100 rounded text-stone-700 border border-stone-200">{chunk}</code>
+                    : chunk
+                )}
+              </span>
+            </div>
+          ))}
+        </div>
+      );
+    }
+
     // Plan card sections
     // ─────────────────────────────────────────────────────────────────────
     function Section({ label, children, accent }) {
@@ -427,9 +476,7 @@
                 </span>
               )}
             </div>
-            <p className="text-sm text-stone-700 leading-relaxed">
-              {diag.summary || <span className="italic text-stone-400">(no diagnosis summary)</span>}
-            </p>
+            <DiagnosisSummary text={diag.summary} />
           </Section>
 
           {/* Part */}
@@ -745,11 +792,17 @@
         }
       };
 
+      const clearJobs = async () => {
+        if (!confirm("Clear all jobs? This cannot be undone.")) return;
+        await fetch(`${API}/jobs`, { method: "DELETE" });
+        setJobs([]);
+      };
+
       const pendingCount = jobs.filter(j => j.status === "pending_approval").length;
 
       return (
         <div className="h-screen flex flex-col">
-          <Header onRefresh={refresh} jobsCount={pendingCount} onViewJobs={() => setShowJobs(true)} />
+          <Header onRefresh={refresh} jobsCount={pendingCount} onViewJobs={() => setShowJobs(true)} onClearJobs={clearJobs} />
           <div className="flex-1 flex overflow-hidden">
             <Sidebar tickets={tickets} selectedId={selectedId} onSelect={selectTicket} />
             <main className="flex-1 overflow-y-auto p-6">

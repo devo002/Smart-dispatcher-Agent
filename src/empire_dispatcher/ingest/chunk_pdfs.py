@@ -1,7 +1,7 @@
-"""Light text chunker. Token-ish chunks via word splitting (good enough for embeddings).
+"""Text chunker using LlamaIndex SentenceSplitter.
 
-We deliberately avoid pulling in tiktoken to keep deps light; sentence-transformers
-embedders truncate at 256–512 wordpieces, so ~600 words / 80 overlap fits comfortably.
+Replaces the original word-count sliding window with sentence-aware chunking so
+chunk boundaries never cut mid-sentence, preserving semantic coherence for embeddings.
 """
 
 from __future__ import annotations
@@ -10,60 +10,65 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Iterable
 
+from llama_index.core.node_parser import SentenceSplitter
+from llama_index.core.schema import Document
 from pypdf import PdfReader
 
 
 @dataclass
 class Chunk:
     text: str
-    source: str           # filename
-    page: int | None      # 1-based page; None for non-PDF sources
+    source: str
+    page: int | None
     chunk_index: int
 
 
-def _split_words(text: str, size: int, overlap: int) -> list[str]:
-    words = text.split()
-    if not words:
-        return []
-    out: list[str] = []
-    i = 0
-    while i < len(words):
-        out.append(" ".join(words[i : i + size]))
-        if i + size >= len(words):
-            break
-        i += size - overlap
-    return out
+_splitter = SentenceSplitter(chunk_size=512, chunk_overlap=64)
 
 
-def chunk_pdf(path: Path, chunk_size: int = 600, overlap: int = 80) -> Iterable[Chunk]:
+def chunk_pdf(path: Path) -> Iterable[Chunk]:
     reader = PdfReader(str(path))
+    chunk_idx = 0
     for page_num, page in enumerate(reader.pages, start=1):
         try:
             text = page.extract_text() or ""
         except Exception:
             text = ""
-        for idx, piece in enumerate(_split_words(text, chunk_size, overlap)):
+        if not text.strip():
+            continue
+        for node in _splitter.get_nodes_from_documents([Document(text=text)]):
             yield Chunk(
-                text=piece,
+                text=node.get_content(),
                 source=path.name,
                 page=page_num,
-                chunk_index=idx,
+                chunk_index=chunk_idx,
             )
+            chunk_idx += 1
 
 
-def chunk_markdown(path: Path, chunk_size: int = 600, overlap: int = 80) -> Iterable[Chunk]:
-    """Chunk a markdown file by splitting on ## headings and --- separators."""
+def chunk_markdown(path: Path) -> Iterable[Chunk]:
+    """Split on ## headings and --- separators first to preserve section structure,
+    then apply SentenceSplitter within each section."""
     import re
+
     raw = path.read_text(encoding="utf-8")
-    # Split on --- dividers first, then on ## section headings within each block
+
     top_sections = [s.strip() for s in raw.split("\n---\n") if s.strip()]
     sections: list[str] = []
     for block in top_sections:
-        # Split on lines that start with ## (keep the heading with its body)
         parts = re.split(r"(?=\n## )", block)
         sections.extend(p.strip() for p in parts if p.strip())
+
     chunk_idx = 0
     for section in sections:
-        for piece in _split_words(section, chunk_size, overlap):
-            yield Chunk(text=piece, source=path.name, page=None, chunk_index=chunk_idx)
+        # Skip preamble sections that don't start with a ## heading
+        if not section.startswith("## ") and not re.search(r"\n## ", section):
+            continue
+        for node in _splitter.get_nodes_from_documents([Document(text=section)]):
+            yield Chunk(
+                text=node.get_content(),
+                source=path.name,
+                page=None,
+                chunk_index=chunk_idx,
+            )
             chunk_idx += 1

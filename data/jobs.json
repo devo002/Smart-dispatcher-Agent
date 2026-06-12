@@ -1,137 +1,145 @@
 [
   {
     "job_id": "JOB-1001",
+    "ticket_id": "T-10004",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:32:01Z"
+  },
+  {
+    "job_id": "JOB-1002",
+    "ticket_id": "T-10009",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:32:11Z"
+  },
+  {
+    "job_id": "JOB-1003",
+    "ticket_id": "T-10009",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:32:31Z"
+  },
+  {
+    "job_id": "JOB-1004",
+    "ticket_id": "T-10002",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:33:17Z"
+  },
+  {
+    "job_id": "JOB-1005",
     "ticket_id": "T-10003",
     "tech_id": "T009",
     "scheduled_date": "2026-05-04",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-05T17:52:01Z"
-  },
-  {
-    "job_id": "JOB-1002",
-    "ticket_id": "T-10003",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
-    "status": "pending_approval",
-    "created_at": "2026-05-05T18:01:49Z"
-  },
-  {
-    "job_id": "JOB-1003",
-    "ticket_id": "T-20001",
-    "tech_id": "T006",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [
-      "VIE-COMP-CAP-45UF"
-    ],
-    "diagnosis": "pump cycles into fault state on cold mornings, recovers mid-day. **Root cause.** Compressor start capacitor weakening; struggles under cold-start load. **Field fix.** Replace start capacitor on compressor board. **Required part.** `VIE-COMP-CAP-45UF`. **Severity.** Medium. Schedu",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-05T18:03:56Z"
-  },
-  {
-    "job_id": "JOB-1004",
-    "ticket_id": "T-20001",
-    "tech_id": "T006",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure) **Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators. **Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed joint. **Field fix.** Pressure-test the refrigera",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
-    "status": "pending_approval",
-    "created_at": "2026-05-05T18:44:17Z"
-  },
-  {
-    "job_id": "JOB-1005",
-    "ticket_id": "T-20001",
-    "tech_id": "T006",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure) **Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators. **Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed joint. **Field fix.** Pressure-test the refrigera",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
-    "status": "pending_approval",
-    "created_at": "2026-05-05T18:47:40Z"
+    "created_at": "2026-06-12T19:33:52Z"
   },
   {
     "job_id": "JOB-1006",
-    "ticket_id": "T-10002",
+    "ticket_id": "T-10004",
     "tech_id": "T001",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T16:21:59Z"
+    "created_at": "2026-06-12T19:34:56Z"
   },
   {
     "job_id": "JOB-1007",
-    "ticket_id": "T-10006",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost) **Symptom.** Hybrid system shows battery offline; PV still feeds grid normally. **Root cause.** CAN-bus cable between inverter and battery degraded or unseated. **Field fix.** Replace CAN cable; verify termination",
-    "workaround_applied": "# Enpal Field Service — Known Issues Reference This document is part of the RAG corpus the Smart-Dispatcher agent searches when triaging tickets. It complements the manufacturer PDFs in `data/manuals/`. Each entry is self-contained so it can be chunked and embedded cleanly. > NOTE FOR REVIEWERS: Entry **HUA-602** below is intentionally **stale** — the listed > replacement part is discontinued in `inventory.csv`. The agent must detect the > inventory miss and fall back to the firmware-update work",
+    "ticket_id": "T-10005",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T16:26:20Z"
+    "created_at": "2026-06-12T19:35:24Z"
   },
   {
     "job_id": "JOB-1008",
-    "ticket_id": "T-10009",
-    "tech_id": "T001",
+    "ticket_id": "T-10006",
+    "tech_id": "T017",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "parts_to_bring": [
+      "GOO-CAN-CABLE-2M"
+    ],
+    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost)\n\n**Symptom.** Hybrid system shows battery offline; PV still feeds grid normally.\n**Root cause.** CAN-bus cable between inverter and battery degraded or unseated.\n**Field fix.** Replace CAN cable; verify termination resistor on battery end.\n**Required part.** `GOO-CAN-CABLE-2M`.\n**Severity.** Medium.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T16:32:25Z"
+    "created_at": "2026-06-12T19:37:43Z"
   },
   {
     "job_id": "JOB-1009",
-    "ticket_id": "T-10014",
-    "tech_id": "T005",
+    "ticket_id": "T-10007",
+    "tech_id": "T019",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained) **Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\" **Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long runs, common on installations >25m fr",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## FRO-1010 — Fronius Symo — State 1010 (DC Component Issue)\n\n**Symptom.** Inverter restarts every few hours, customer reports flickering output.\n**Root cause.** Failing DC capacitor bank, common on units >5 years old.\n**Field fix.** Capacitor replacement requires factory-trained technician — escalate\nto certified Fronius partner. Do not attempt field repair.\n**Required part.** `FRO-CAP-BANK` (workshop only, not field-replaceable).\n**Severity.** High. System should be powered down until repair.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T16:35:53Z"
+    "created_at": "2026-06-12T19:38:07Z"
   },
   {
     "job_id": "JOB-1010",
-    "ticket_id": "T-10014",
-    "tech_id": "T005",
+    "ticket_id": "T-10011",
+    "tech_id": "T001",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "# Enpal Field Service — Known Issues Reference This document is part of the RAG corpus the Smart-Dispatcher agent searches when triaging tickets. It complements the manufacturer PDFs in `data/manuals/`. Each entry is self-contained so it can be chunked and embedded cleanly. > NOT",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:03:02Z"
+    "created_at": "2026-06-12T19:38:30Z"
   },
   {
     "job_id": "JOB-1011",
     "ticket_id": "T-10016",
     "tech_id": "T001",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "parts_to_bring": [
+      "TOOL-IR-CAMERA"
+    ],
+    "diagnosis": "## MISC-SMOKE-SMELL — Inverter / Battery Cabinet — Burning or Smoke Smell\n\n**Symptom.** Customer reports burning smell, smoke, or unusual odour near the inverter,\nbattery cabinet, or distribution board. Inverter may still be running.\n**Root cause.** Possible overheating component, arcing connector, or failing capacitor.\nMust be assessed on-site before any part is identified.\n**Field fix.** Isolate the PV string disconnector and AC breaker immediately. Do not\nreplace parts remotely — technician must perform visual inspection and thermal scan\nbefore diagnosis. Escalate to senior engineer if physical damage or scorch marks found.\n**Required part.** None until on-site assessment. Use thermal camera (TOOL-IR-CAMERA)\nduring visit.\n**Severity.** High. Treat as potential fire risk until inspection clears it.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:04:20Z"
+    "created_at": "2026-06-12T19:39:13Z"
   },
   {
     "job_id": "JOB-1012",
-    "ticket_id": "T-10021",
-    "tech_id": "T016",
-    "scheduled_date": "2026-05-04",
+    "ticket_id": "T-10024",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## HUA-501 — Huawei SUN2000 — Error 501 (DC Insulation Fault) **Symptom.** Yellow status LED, app shows \"DC Insulation Resistance Low.\" **Root cause.** Moisture ingress at MC4 connector or damaged PV string cable. **Field fix.** Inspect string-side MC4 connectors for water; resea",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:07:29Z"
+    "created_at": "2026-06-12T19:39:28Z"
   },
   {
     "job_id": "JOB-1013",
@@ -139,442 +147,412 @@
     "tech_id": "T005",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:09:22Z"
+    "created_at": "2026-06-12T19:39:44Z"
   },
   {
     "job_id": "JOB-1014",
-    "ticket_id": "T-10016",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
+    "ticket_id": "T-10003",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:18:44Z"
+    "created_at": "2026-06-12T19:40:14Z"
   },
   {
     "job_id": "JOB-1015",
-    "ticket_id": "T-10024",
-    "tech_id": "T001",
+    "ticket_id": "T-10002",
+    "tech_id": "T005",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## HUA-001 — Huawei SUN2000 — Error 0x0001 (Grid Loss)\n\n**Symptom.** Inverter shows red status LED, app reports \"Grid Lost,\" PV production stops.\n**Root cause.** Grid voltage outside acceptable window (most often a utility-side outage\nor a tripped main RCD at the customer property).\n**Field fix.** No part swap needed. Verify the household main breaker, then wait 5\nminutes for the inverter to auto-restart. If the issue persists more than 30 minutes,\nescalate to grid operator.\n**Required part.** None.\n**Severity.** Low.",
+    "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:19:40Z"
+    "created_at": "2026-06-12T19:45:33Z"
   },
   {
     "job_id": "JOB-1016",
-    "ticket_id": "T-10020",
+    "ticket_id": "T-10003",
     "tech_id": "T009",
     "scheduled_date": "2026-05-04",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
+    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained)\n\n**Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\"\n**Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long\nruns, common on installations >25m from the meter.\n**Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2`\nunit which includes built-in voltage compensation.\n**Required part.** `HUA-AC-ISO-V2`.\n**Severity.** Medium.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-06T17:20:23Z"
+    "created_at": "2026-06-12T19:47:46Z"
   },
   {
     "job_id": "JOB-1017",
-    "ticket_id": "T-10018",
-    "tech_id": "T002",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure) **Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators. **Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed joint. **Field fix.** Pressure-test the refrigera",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
-    "status": "pending_approval",
-    "created_at": "2026-05-06T17:23:57Z"
-  },
-  {
-    "job_id": "JOB-1018",
-    "ticket_id": "T-10021",
-    "tech_id": "T016",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HUA-501 — Huawei SUN2000 — Error 501 (DC Insulation Fault) **Symptom.** Yellow status LED, app shows \"DC Insulation Resistance Low.\" **Root cause.** Moisture ingress at MC4 connector or damaged PV string cable. **Field fix.** Inspect string-side MC4 connectors for water; resea",
-    "workaround_applied": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the Fusion",
-    "status": "pending_approval",
-    "created_at": "2026-05-06T17:26:22Z"
-  },
-  {
-    "job_id": "JOB-1019",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:54:07Z"
-  },
-  {
-    "job_id": "JOB-1020",
-    "ticket_id": "T-10006",
-    "tech_id": "T017",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost) **Symptom.** Hybrid system shows battery offline; PV still feeds grid normally. **Root cause.** CAN-bus cable between inverter and battery degraded or unseated. **Field fix.** Replace CAN cable; verify termination",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:55:07Z"
-  },
-  {
-    "job_id": "JOB-1021",
-    "ticket_id": "T-10009",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:56:17Z"
-  },
-  {
-    "job_id": "JOB-1022",
-    "ticket_id": "T-10011",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:57:02Z"
-  },
-  {
-    "job_id": "JOB-1023",
-    "ticket_id": "T-10016",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:58:06Z"
-  },
-  {
-    "job_id": "JOB-1024",
-    "ticket_id": "T-10018",
-    "tech_id": "T002",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure) **Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators. **Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed joint. **Field fix.** Pressure-test the refrigera",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:58:30Z"
-  },
-  {
-    "job_id": "JOB-1025",
-    "ticket_id": "T-10021",
-    "tech_id": "T016",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## HUA-501 — Huawei SUN2000 — Error 501 (DC Insulation Fault) **Symptom.** Yellow status LED, app shows \"DC Insulation Resistance Low.\" **Root cause.** Moisture ingress at MC4 connector or damaged PV string cable. **Field fix.** Inspect string-side MC4 connectors for water; resea",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T21:59:05Z"
-  },
-  {
-    "job_id": "JOB-1026",
-    "ticket_id": "T-10023",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T22:00:19Z"
-  },
-  {
-    "job_id": "JOB-1027",
-    "ticket_id": "T-10024",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-06T22:00:39Z"
-  },
-  {
-    "job_id": "JOB-1028",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-07T20:47:09Z"
-  },
-  {
-    "job_id": "JOB-1029",
-    "ticket_id": "T-10009",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If imbalance persists, replace BMS. **Required part.** None initially; `BAT-BMS-LFP` if balancing fails. **Severity.** Low.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-07T20:47:55Z"
-  },
-  {
-    "job_id": "JOB-1030",
-    "ticket_id": "T-10014",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "# Enpal Field Service — Known Issues Reference This document is part of the RAG corpus the Smart-Dispatcher agent searches when triaging tickets. It complements the manufacturer PDFs in `data/manuals/`. Each entry is self-contained so it can be chunked and embedded cleanly. > NOTE FOR REVIEWERS: Entry **HUA-602** below is intentionally **stale** — the listed > replacement part is discontinued in `inventory.csv`. The agent must detect the > inventory miss and fall back to the firmware-update workaround. This drives the > self-correction demo trace.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-07T20:48:44Z"
-  },
-  {
-    "job_id": "JOB-1031",
-    "ticket_id": "T-10016",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-07T20:49:25Z"
-  },
-  {
-    "job_id": "JOB-1032",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-08T12:50:29Z"
-  },
-  {
-    "job_id": "JOB-1033",
-    "ticket_id": "T-10009",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If imbalance persists, replace BMS. **Required part.** None initially; `BAT-BMS-LFP` if balancing fails. **Severity.** Low.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-08T13:17:57Z"
-  },
-  {
-    "job_id": "JOB-1034",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-14T19:14:37Z"
-  },
-  {
-    "job_id": "JOB-1035",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-14T19:15:40Z"
-  },
-  {
-    "job_id": "JOB-1036",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:31:59Z"
-  },
-  {
-    "job_id": "JOB-1037",
-    "ticket_id": "T-10023",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:32:26Z"
-  },
-  {
-    "job_id": "JOB-1038",
-    "ticket_id": "T-10024",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip **Symptom.** Battery shows fault, refuses to charge above 90% SoC. **Root cause.** Cell imbalance after long period without full charge cycle. **Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If imbalance persists, replace BMS. **Required part.** None initially; `BAT-BMS-LFP` if balancing fails. **Severity.** Low.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:32:33Z"
-  },
-  {
-    "job_id": "JOB-1039",
-    "ticket_id": "T-10020",
-    "tech_id": "T009",
-    "scheduled_date": "2026-05-04",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:35:24Z"
-  },
-  {
-    "job_id": "JOB-1040",
-    "ticket_id": "T-10002",
-    "tech_id": "T005",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:35:53Z"
-  },
-  {
-    "job_id": "JOB-1041",
-    "ticket_id": "T-10004",
-    "tech_id": "T001",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly) **Symptom.** Audible fan grinding, occasional thermal derating in summer. **Root cause.** Bearing wear on the internal cooling fan. **Field fix.** Replace cooling fan assembly. **Required part.** `SMA-FAN-ASSY`. **Severity.** Low. Schedule at next available slot, system still operating.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:37:15Z"
-  },
-  {
-    "job_id": "JOB-1042",
-    "ticket_id": "T-10005",
-    "tech_id": "T010",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure) **Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators. **Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed joint. **Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic detector, re-braze joint and recharge with R290. **Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`. **Severity.** High. Customer is without heat. Same-day visit required in winter months.",
-    "workaround_applied": null,
-    "status": "pending_approval",
-    "created_at": "2026-05-26T15:38:03Z"
-  },
-  {
-    "job_id": "JOB-1043",
     "ticket_id": "T-10001",
     "tech_id": "T001",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained) **Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\" **Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long runs, common on installations >25m from the meter. **Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2` unit which includes built-in voltage compensation. **Required part.** `HUA-AC-ISO-V2`. **Severity.** Medium.",
-    "workaround_applied": null,
+    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained)\n\n**Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\"\n**Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long\nruns, common on installations >25m from the meter.\n**Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2`\nunit which includes built-in voltage compensation.\n**Required part.** `HUA-AC-ISO-V2`.\n**Severity.** Medium.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:48:18Z",
-    "last_action": "reset_by_dispatcher",
-    "last_action_at": "2026-05-26T15:57:00Z"
+    "created_at": "2026-06-12T19:48:43Z"
   },
   {
-    "job_id": "JOB-1044",
+    "job_id": "JOB-1018",
     "ticket_id": "T-10002",
     "tech_id": "T005",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
+    "diagnosis": "## HUA-001 — Huawei SUN2000 — Error 0x0001 (Grid Loss)\n\n**Symptom.** Inverter shows red status LED, app reports \"Grid Lost,\" PV production stops.\n**Root cause.** Grid voltage outside acceptable window (most often a utility-side outage\nor a tripped main RCD at the customer property).\n**Field fix.** No part swap needed. Verify the household main breaker, then wait 5\nminutes for the inverter to auto-restart. If the issue persists more than 30 minutes,\nescalate to grid operator.\n**Required part.** None.\n**Severity.** Low.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:48:41Z",
-    "last_action": "reset_by_dispatcher",
-    "last_action_at": "2026-05-26T15:56:54Z"
+    "created_at": "2026-06-12T19:48:46Z"
   },
   {
-    "job_id": "JOB-1045",
-    "ticket_id": "T-10006",
-    "tech_id": "T017",
-    "scheduled_date": "2026-05-05",
+    "job_id": "JOB-1019",
+    "ticket_id": "T-10003",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
     "parts_to_bring": [],
-    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost) **Symptom.** Hybrid system shows battery offline; PV still feeds grid normally. **Root cause.** CAN-bus cable between inverter and battery degraded or unseated. **Field fix.** Replace CAN cable; verify termination resistor on battery end. **Required part.** `GOO-CAN-CABLE-2M`. **Severity.** Medium.",
-    "workaround_applied": null,
+    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained)\n\n**Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\"\n**Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long\nruns, common on installations >25m from the meter.\n**Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2`\nunit which includes built-in voltage compensation.\n**Required part.** `HUA-AC-ISO-V2`.\n**Severity.** Medium.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:50:35Z"
+    "created_at": "2026-06-12T19:48:49Z"
   },
   {
-    "job_id": "JOB-1046",
+    "job_id": "JOB-1020",
     "ticket_id": "T-10004",
     "tech_id": "T001",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly) **Symptom.** Audible fan grinding, occasional thermal derating in summer. **Root cause.** Bearing wear on the internal cooling fan. **Field fix.** Replace cooling fan assembly. **Required part.** `SMA-FAN-ASSY`. **Severity.** Low. Schedule at next available slot, system still operating.",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:50:54Z"
+    "created_at": "2026-06-12T19:48:52Z"
   },
   {
-    "job_id": "JOB-1047",
+    "job_id": "JOB-1021",
+    "ticket_id": "T-10005",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:48:55Z"
+  },
+  {
+    "job_id": "JOB-1022",
+    "ticket_id": "T-10006",
+    "tech_id": "T017",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "GOO-CAN-CABLE-2M"
+    ],
+    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost)\n\n**Symptom.** Hybrid system shows battery offline; PV still feeds grid normally.\n**Root cause.** CAN-bus cable between inverter and battery degraded or unseated.\n**Field fix.** Replace CAN cable; verify termination resistor on battery end.\n**Required part.** `GOO-CAN-CABLE-2M`.\n**Severity.** Medium.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:48:58Z"
+  },
+  {
+    "job_id": "JOB-1023",
+    "ticket_id": "T-10007",
+    "tech_id": "T019",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## FRO-1010 — Fronius Symo — State 1010 (DC Component Issue)\n\n**Symptom.** Inverter restarts every few hours, customer reports flickering output.\n**Root cause.** Failing DC capacitor bank, common on units >5 years old.\n**Field fix.** Capacitor replacement requires factory-trained technician — escalate\nto certified Fronius partner. Do not attempt field repair.\n**Required part.** `FRO-CAP-BANK` (workshop only, not field-replaceable).\n**Severity.** High. System should be powered down until repair.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:01Z"
+  },
+  {
+    "job_id": "JOB-1024",
+    "ticket_id": "T-10008",
+    "tech_id": "T014",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "VIE-COMP-CAP-45UF"
+    ],
+    "diagnosis": "## HP-VIESSMANN-A9 — Viessmann Vitocal — A9 (Compressor Overload)\n\n**Symptom.** Heat pump cycles into fault state on cold mornings, recovers mid-day.\n**Root cause.** Compressor start capacitor weakening; struggles under cold-start load.\n**Field fix.** Replace start capacitor on compressor board.\n**Required part.** `VIE-COMP-CAP-45UF`.\n**Severity.** Medium. Schedule within 5 days.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:04Z"
+  },
+  {
+    "job_id": "JOB-1025",
+    "ticket_id": "T-10010",
+    "tech_id": "T022",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "EV-RCD-TYPE-B"
+    ],
+    "diagnosis": "## EV-WALLBOX-FAULT — Empire EV Wallbox — Charging Stopped or Wrong LED\n\n**Symptom.** EV wallbox has stopped charging the vehicle. LED shows wrong colour (blue\ninstead of green, or solid red). Vehicle may report no charge added overnight.\n**Root cause.** Most common causes: RCD trip in the distribution board, loose Type 2\ncable connection, communication timeout between wallbox and vehicle, or wallbox firmware\nissue.\n**Field fix.** Check RCD-Type-B breaker in the consumer unit first — reset if tripped.\nReseat the Type 2 cable at both ends. If LED is solid red, power-cycle the wallbox.\nIf fault persists after reset, replace the RCD or the cable.\n**Required part.** None initially; `EV-RCD-TYPE-B` if RCD is faulty or `EV-CABLE-T2-5M`\nif cable is damaged.\n**Severity.** Medium. Vehicle cannot charge but no safety risk.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:08Z"
+  },
+  {
+    "job_id": "JOB-1026",
+    "ticket_id": "T-10014",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-AFCI-MOD"
+    ],
+    "diagnosis": "## SMA-301 — SMA Sunny Boy — Error 301 (Self-test Fault)\n\n**Symptom.** Inverter cycles through self-test repeatedly, no production.\n**Root cause.** Failed AFCI module, typically after a lightning event in the region.\n**Field fix.** Replace the AFCI module on the AC board.\n**Required part.** `SMA-AFCI-MOD`.\n**Severity.** High. Schedule within 24h — system is offline.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:11Z"
+  },
+  {
+    "job_id": "JOB-1027",
+    "ticket_id": "T-10015",
+    "tech_id": "T019",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-AFCI-MOD"
+    ],
+    "diagnosis": "## SMA-301 — SMA Sunny Boy — Error 301 (Self-test Fault)\n\n**Symptom.** Inverter cycles through self-test repeatedly, no production.\n**Root cause.** Failed AFCI module, typically after a lightning event in the region.\n**Field fix.** Replace the AFCI module on the AC board.\n**Required part.** `SMA-AFCI-MOD`.\n**Severity.** High. Schedule within 24h — system is offline.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:14Z"
+  },
+  {
+    "job_id": "JOB-1028",
+    "ticket_id": "T-10016",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "TOOL-IR-CAMERA"
+    ],
+    "diagnosis": "## MISC-SMOKE-SMELL — Inverter / Battery Cabinet — Burning or Smoke Smell\n\n**Symptom.** Customer reports burning smell, smoke, or unusual odour near the inverter,\nbattery cabinet, or distribution board. Inverter may still be running.\n**Root cause.** Possible overheating component, arcing connector, or failing capacitor.\nMust be assessed on-site before any part is identified.\n**Field fix.** Isolate the PV string disconnector and AC breaker immediately. Do not\nreplace parts remotely — technician must perform visual inspection and thermal scan\nbefore diagnosis. Escalate to senior engineer if physical damage or scorch marks found.\n**Required part.** None until on-site assessment. Use thermal camera (TOOL-IR-CAMERA)\nduring visit.\n**Severity.** High. Treat as potential fire risk until inspection clears it.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:16Z"
+  },
+  {
+    "job_id": "JOB-1029",
+    "ticket_id": "T-10018",
+    "tech_id": "T002",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:22Z"
+  },
+  {
+    "job_id": "JOB-1030",
+    "ticket_id": "T-10021",
+    "tech_id": "T016",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [],
+    "diagnosis": "## HUA-001 — Huawei SUN2000 — Error 0x0001 (Grid Loss)\n\n**Symptom.** Inverter shows red status LED, app reports \"Grid Lost,\" PV production stops.\n**Root cause.** Grid voltage outside acceptable window (most often a utility-side outage\nor a tripped main RCD at the customer property).\n**Field fix.** No part swap needed. Verify the household main breaker, then wait 5\nminutes for the inverter to auto-restart. If the issue persists more than 30 minutes,\nescalate to grid operator.\n**Required part.** None.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:26Z"
+  },
+  {
+    "job_id": "JOB-1031",
+    "ticket_id": "T-10025",
+    "tech_id": "T013",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "ENC-LIGHTNING-SPD"
+    ],
+    "diagnosis": "## MISC-SPD-TRIP — Surge Protection Device (SPD) — Tripped After Lightning\n\n**Symptom.** SPD indicator in the distribution board shows red (was green); triggered\nafter a nearby lightning strike or severe storm. PV system may still be running normally.\n**Root cause.** Type 2 SPD has sacrificed itself absorbing the surge transient — this is\nthe device working correctly. Once tripped, the SPD no longer provides protection and\nmust be replaced before the next storm.\n**Field fix.** Switch off the PV string disconnector before working in the board. Replace\nthe SPD with a new Type 2 unit. Check all DC string fuses and AC breakers for damage\nwhile the board is open.\n**Required part.** `ENC-LIGHTNING-SPD`.\n**Severity.** Medium. System is currently unprotected but operational; schedule within 5 days.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:49:32Z"
+  },
+  {
+    "job_id": "JOB-1032",
+    "ticket_id": "T-10001",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained)\n\n**Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\"\n**Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long\nruns, common on installations >25m from the meter.\n**Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2`\nunit which includes built-in voltage compensation.\n**Required part.** `HUA-AC-ISO-V2`.\n**Severity.** Medium.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:00Z"
+  },
+  {
+    "job_id": "JOB-1033",
     "ticket_id": "T-10002",
     "tech_id": "T005",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:56:42Z"
+    "created_at": "2026-06-12T19:51:03Z"
   },
   {
-    "job_id": "JOB-1048",
+    "job_id": "JOB-1034",
+    "ticket_id": "T-10003",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [],
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:06Z"
+  },
+  {
+    "job_id": "JOB-1035",
+    "ticket_id": "T-10004",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:09Z"
+  },
+  {
+    "job_id": "JOB-1036",
+    "ticket_id": "T-10005",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:12Z"
+  },
+  {
+    "job_id": "JOB-1037",
+    "ticket_id": "T-10006",
+    "tech_id": "T017",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "GOO-CAN-CABLE-2M"
+    ],
+    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost)\n\n**Symptom.** Hybrid system shows battery offline; PV still feeds grid normally.\n**Root cause.** CAN-bus cable between inverter and battery degraded or unseated.\n**Field fix.** Replace CAN cable; verify termination resistor on battery end.\n**Required part.** `GOO-CAN-CABLE-2M`.\n**Severity.** Medium.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:15Z"
+  },
+  {
+    "job_id": "JOB-1038",
+    "ticket_id": "T-10007",
+    "tech_id": "T019",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## FRO-1010 — Fronius Symo — State 1010 (DC Component Issue)\n\n**Symptom.** Inverter restarts every few hours, customer reports flickering output.\n**Root cause.** Failing DC capacitor bank, common on units >5 years old.\n**Field fix.** Capacitor replacement requires factory-trained technician — escalate\nto certified Fronius partner. Do not attempt field repair.\n**Required part.** `FRO-CAP-BANK` (workshop only, not field-replaceable).\n**Severity.** High. System should be powered down until repair.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:18Z"
+  },
+  {
+    "job_id": "JOB-1039",
+    "ticket_id": "T-10008",
+    "tech_id": "T014",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "VIE-COMP-CAP-45UF"
+    ],
+    "diagnosis": "## HP-VIESSMANN-A9 — Viessmann Vitocal — A9 (Compressor Overload)\n\n**Symptom.** Heat pump cycles into fault state on cold mornings, recovers mid-day.\n**Root cause.** Compressor start capacitor weakening; struggles under cold-start load.\n**Field fix.** Replace start capacitor on compressor board.\n**Required part.** `VIE-COMP-CAP-45UF`.\n**Severity.** Medium. Schedule within 5 days.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:21Z"
+  },
+  {
+    "job_id": "JOB-1040",
+    "ticket_id": "T-10010",
+    "tech_id": "T022",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "EV-RCD-TYPE-B"
+    ],
+    "diagnosis": "## EV-WALLBOX-FAULT — Empire EV Wallbox — Charging Stopped or Wrong LED\n\n**Symptom.** EV wallbox has stopped charging the vehicle. LED shows wrong colour (blue\ninstead of green, or solid red). Vehicle may report no charge added overnight.\n**Root cause.** Most common causes: RCD trip in the distribution board, loose Type 2\ncable connection, communication timeout between wallbox and vehicle, or wallbox firmware\nissue.\n**Field fix.** Check RCD-Type-B breaker in the consumer unit first — reset if tripped.\nReseat the Type 2 cable at both ends. If LED is solid red, power-cycle the wallbox.\nIf fault persists after reset, replace the RCD or the cable.\n**Required part.** None initially; `EV-RCD-TYPE-B` if RCD is faulty or `EV-CABLE-T2-5M`\nif cable is damaged.\n**Severity.** Medium. Vehicle cannot charge but no safety risk.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:24Z"
+  },
+  {
+    "job_id": "JOB-1041",
     "ticket_id": "T-10014",
     "tech_id": "T005",
     "scheduled_date": "2026-05-05",
     "parts_to_bring": [],
-    "diagnosis": "# Enpal Field Service — Known Issues Reference This document is part of the RAG corpus the Smart-Dispatcher agent searches when triaging tickets. It complements the manufacturer PDFs in `data/manuals/`. Each entry is self-contained so it can be chunked and embedded cleanly. > NOTE FOR REVIEWERS: Entry **HUA-602** below is intentionally **stale** — the listed > replacement part is discontinued in `inventory.csv`. The agent must detect the > inventory miss and fall back to the firmware-update workaround. This drives the > self-correction demo trace.",
-    "workaround_applied": null,
+    "diagnosis": "## HUA-602 — Huawei SUN2000 — Error 602 (Grid Overvoltage, Sustained)\n\n**Symptom.** Repeated red-LED faults during midday peak, app shows \"Grid Voltage High.\"\n**Root cause.** AC-side voltage rising above 253V due to undersized AC cable on long\nruns, common on installations >25m from the meter.\n**Field fix (PRIMARY).** Replace the AC isolator with the upgraded `HUA-AC-ISO-V2`\nunit which includes built-in voltage compensation.\n**Required part.** `HUA-AC-ISO-V2`.\n**Severity.** Medium.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:58:05Z"
+    "created_at": "2026-06-12T19:51:28Z"
   },
   {
-    "job_id": "JOB-1049",
+    "job_id": "JOB-1042",
     "ticket_id": "T-10015",
     "tech_id": "T019",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "# Enpal Field Service — Known Issues Reference This document is part of the RAG corpus the Smart-Dispatcher agent searches when triaging tickets. It complements the manufacturer PDFs in `data/manuals/`. Each entry is self-contained so it can be chunked and embedded cleanly. > NOTE FOR REVIEWERS: Entry **HUA-602** below is intentionally **stale** — the listed > replacement part is discontinued in `inventory.csv`. The agent must detect the > inventory miss and fall back to the firmware-update workaround. This drives the > self-correction demo trace.",
+    "parts_to_bring": [
+      "SMA-AFCI-MOD"
+    ],
+    "diagnosis": "## SMA-301 — SMA Sunny Boy — Error 301 (Self-test Fault)\n\n**Symptom.** Inverter cycles through self-test repeatedly, no production.\n**Root cause.** Failed AFCI module, typically after a lightning event in the region.\n**Field fix.** Replace the AFCI module on the AC board.\n**Required part.** `SMA-AFCI-MOD`.\n**Severity.** High. Schedule within 24h — system is offline.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:58:22Z"
+    "created_at": "2026-06-12T19:51:30Z"
   },
   {
-    "job_id": "JOB-1050",
-    "ticket_id": "T-10008",
-    "tech_id": "T014",
+    "job_id": "JOB-1043",
+    "ticket_id": "T-10016",
+    "tech_id": "T001",
     "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## HP-VIESSMANN-A9 — Viessmann Vitocal — A9 (Compressor Overload) **Symptom.** Heat pump cycles into fault state on cold mornings, recovers mid-day. **Root cause.** Compressor start capacitor weakening; struggles under cold-start load. **Field fix.** Replace start capacitor on compressor board. **Required part.** `VIE-COMP-CAP-45UF`. **Severity.** Medium. Schedule within 5 days.",
+    "parts_to_bring": [
+      "TOOL-IR-CAMERA"
+    ],
+    "diagnosis": "## MISC-SMOKE-SMELL — Inverter / Battery Cabinet — Burning or Smoke Smell\n\n**Symptom.** Customer reports burning smell, smoke, or unusual odour near the inverter,\nbattery cabinet, or distribution board. Inverter may still be running.\n**Root cause.** Possible overheating component, arcing connector, or failing capacitor.\nMust be assessed on-site before any part is identified.\n**Field fix.** Isolate the PV string disconnector and AC breaker immediately. Do not\nreplace parts remotely — technician must perform visual inspection and thermal scan\nbefore diagnosis. Escalate to senior engineer if physical damage or scorch marks found.\n**Required part.** None until on-site assessment. Use thermal camera (TOOL-IR-CAMERA)\nduring visit.\n**Severity.** High. Treat as potential fire risk until inspection clears it.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:58:38Z"
+    "created_at": "2026-06-12T19:51:33Z"
   },
   {
-    "job_id": "JOB-1051",
-    "ticket_id": "T-10006",
-    "tech_id": "T017",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## GOO-115 — Goodwe GW-ET — Error 115 (Battery Communication Lost) **Symptom.** Hybrid system shows battery offline; PV still feeds grid normally. **Root cause.** CAN-bus cable between inverter and battery degraded or unseated. **Field fix.** Replace CAN cable; verify termination resistor on battery end. **Required part.** `GOO-CAN-CABLE-2M`. **Severity.** Medium.",
+    "job_id": "JOB-1044",
+    "ticket_id": "T-10018",
+    "tech_id": "T002",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T15:58:55Z"
+    "created_at": "2026-06-12T19:51:39Z"
   },
   {
-    "job_id": "JOB-1052",
-    "ticket_id": "T-10013",
-    "tech_id": "T010",
-    "scheduled_date": "2026-05-05",
-    "parts_to_bring": [],
-    "diagnosis": "## Workarounds when primary parts are unavailable ### HUA-602 fallback (firmware route) If `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135** or later includes a configurable grid-voltage tolerance band that can be widened from the default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a hardware swap. This is an Enpal-approved temporary workaround pending part availability. The firmware update can be pushed remotely from the FusionSolar portal. **Procedure.** 1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer). 2. Push firmware via FusionSolar; takes ~20 minutes including reboot. 3. Set \"Grid voltage upper limit\" to 257V in installer settings. 4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once restocked. ### SMA-410 fallback If `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit operating at reduced output. Customer can be informed; visit can be deferred up to 14 days without performance penalty.",
+    "job_id": "JOB-1045",
+    "ticket_id": "T-10021",
+    "tech_id": "T016",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "MC4-GASKET-KIT"
+    ],
+    "diagnosis": "## HUA-501 — Huawei SUN2000 — Error 501 (DC Insulation Fault)\n\n**Symptom.** Yellow status LED, app shows \"DC Insulation Resistance Low.\"\n**Root cause.** Moisture ingress at MC4 connector or damaged PV string cable.\n**Field fix.** Inspect string-side MC4 connectors for water; reseat with new gaskets.\nMeasure insulation resistance with megger; replace damaged cable section if reading\nbelow 1 MOhm.\n**Required part.** `MC4-GASKET-KIT` (in stock) or `PV-CABLE-6MM-50M` (in stock).\n**Severity.** Medium. Schedule within 48h.",
     "workaround_applied": null,
     "status": "pending_approval",
-    "created_at": "2026-05-26T16:00:01Z"
+    "created_at": "2026-06-12T19:51:42Z"
+  },
+  {
+    "job_id": "JOB-1046",
+    "ticket_id": "T-10025",
+    "tech_id": "T013",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "ENC-LIGHTNING-SPD"
+    ],
+    "diagnosis": "## MISC-SPD-TRIP — Surge Protection Device (SPD) — Tripped After Lightning\n\n**Symptom.** SPD indicator in the distribution board shows red (was green); triggered\nafter a nearby lightning strike or severe storm. PV system may still be running normally.\n**Root cause.** Type 2 SPD has sacrificed itself absorbing the surge transient — this is\nthe device working correctly. Once tripped, the SPD no longer provides protection and\nmust be replaced before the next storm.\n**Field fix.** Switch off the PV string disconnector before working in the board. Replace\nthe SPD with a new Type 2 unit. Check all DC string fuses and AC breakers for damage\nwhile the board is open.\n**Required part.** `ENC-LIGHTNING-SPD`.\n**Severity.** Medium. System is currently unprotected but operational; schedule within 5 days.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-12T19:51:48Z"
   }
 ]

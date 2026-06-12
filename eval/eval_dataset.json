@@ -7,7 +7,7 @@
     "expected_severity_min": "low",
     "expected_required_skills_any": ["solar"],
     "should_require_part": false,
-    "notes": "Grid loss — auto-recovers, no part swap."
+    "notes": "Grid loss — auto-recovers, no part swap. Huawei explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10002",
@@ -17,18 +17,17 @@
     "expected_severity_min": "medium",
     "expected_required_skills_any": ["solar"],
     "should_require_part": true,
-    "notes": "Insulation fault after rain — typically MC4 gasket or cable."
+    "notes": "Insulation fault after rain — typically MC4 gasket or cable. Huawei explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10003",
     "expected_error_code": "602",
-    "expected_manufacturer": "Huawei",
     "expected_intent": "fault",
     "expected_severity_min": "medium",
     "expected_required_skills_any": ["solar"],
     "should_require_part": true,
     "should_self_correct": true,
-    "notes": "Headline self-correction case — primary part discontinued, fall back to firmware workaround."
+    "notes": "Headline self-correction case — primary part discontinued, fall back to firmware workaround. Manufacturer not in ticket so not tested."
   },
   {
     "ticket_id": "T-10004",
@@ -38,17 +37,16 @@
     "expected_severity_min": "low",
     "expected_required_skills_any": ["solar"],
     "should_require_part": true,
-    "notes": "Fan replacement — non-urgent."
+    "notes": "Fan replacement — non-urgent. SMA explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10005",
     "expected_error_code": "F.22",
-    "expected_manufacturer": "Vaillant",
     "expected_intent": "fault",
     "expected_severity_min": "high",
     "expected_required_skills_any": ["heatpump", "refrigerant"],
     "should_require_part": true,
-    "notes": "Family with kids, no heat — same-day required."
+    "notes": "Family with kids, no heat — same-day required. Manufacturer not in ticket so not tested."
   },
   {
     "ticket_id": "T-10006",
@@ -58,17 +56,17 @@
     "expected_severity_min": "medium",
     "expected_required_skills_any": ["battery", "hybrid"],
     "should_require_part": true,
-    "notes": "CAN cable replacement."
+    "notes": "CAN cable replacement. Goodwe explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10007",
     "expected_error_code": "1010",
     "expected_manufacturer": "Fronius",
     "expected_intent": "fault",
-    "expected_severity_min": "high",
+    "expected_severity_min": "medium",
     "expected_required_skills_any": ["solar"],
     "should_require_part": true,
-    "notes": "Workshop-only escalation — agent must surface that."
+    "notes": "Workshop-only escalation — agent must surface that. Inverter still running (restarts), not fully offline — medium is correct floor."
   },
   {
     "ticket_id": "T-10008",
@@ -78,24 +76,23 @@
     "expected_severity_min": "medium",
     "expected_required_skills_any": ["heatpump"],
     "should_require_part": true,
-    "notes": "Compressor capacitor replacement."
+    "notes": "Compressor capacitor replacement. Viessmann explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10010",
     "expected_intent": "fault",
     "expected_severity_min": "medium",
     "should_require_part": false,
-    "notes": "EV wallbox — no clear error code in body."
+    "notes": "EV wallbox — no clear error code in body, no knowledge base entry so no part expected."
   },
   {
     "ticket_id": "T-10014",
     "expected_error_code": "602",
-    "expected_manufacturer": "Huawei",
     "expected_intent": "fault",
     "expected_severity_min": "medium",
     "should_require_part": true,
     "should_self_correct": true,
-    "notes": "Repeat customer of T-10003-style issue; same self-correction expected."
+    "notes": "Repeat customer of T-10003-style issue; same self-correction expected. Manufacturer not in ticket so not tested."
   },
   {
     "ticket_id": "T-10015",
@@ -104,14 +101,14 @@
     "expected_intent": "fault",
     "expected_severity_min": "high",
     "should_require_part": true,
-    "notes": "Brand-new install fully offline — high priority."
+    "notes": "Brand-new install fully offline — high priority. SMA explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10016",
     "expected_intent": "fault",
     "expected_severity_min": "high",
     "should_require_part": false,
-    "notes": "Smoke smell — agent must mark high severity even without a code."
+    "notes": "Smoke smell — agent must mark high severity even without a code. No part needed; only assessment."
   },
   {
     "ticket_id": "T-10017",
@@ -124,9 +121,9 @@
     "expected_error_code": "F.22",
     "expected_manufacturer": "Vaillant",
     "expected_intent": "fault",
-    "expected_severity_min": "high",
+    "expected_severity_min": "medium",
     "should_require_part": true,
-    "notes": "Recurring issue — agent should still triage the same way."
+    "notes": "Recurring issue — customer reports it matter-of-factly, no active no-heat emergency stated. Medium is correct floor."
   },
   {
     "ticket_id": "T-10021",
@@ -135,7 +132,7 @@
     "expected_intent": "fault",
     "expected_severity_min": "medium",
     "should_require_part": true,
-    "notes": "Post-storm insulation fault."
+    "notes": "Post-storm insulation fault. Huawei explicitly mentioned in ticket."
   },
   {
     "ticket_id": "T-10022",
@@ -148,6 +145,6 @@
     "expected_intent": "fault",
     "expected_severity_min": "medium",
     "should_require_part": true,
-    "notes": "SPD (surge protector) tripped after lightning — replace SPD."
+    "notes": "SPD (surge protector) tripped after lightning — replace SPD. Knowledge base entry exists."
   }
 ]
