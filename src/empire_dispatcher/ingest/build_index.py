@@ -50,7 +50,12 @@ def build() -> int:
         ids=[f"{c.source}:{c.page}:{c.chunk_index}" for c in chunks],
         documents=[c.text for c in chunks],
         metadatas=[
-            {"source": c.source, "page": c.page if c.page is not None else -1}
+            {
+                "source": c.source,
+                "page": c.page if c.page is not None else -1,
+                "error_code": c.error_code or "",
+                "manufacturer": c.manufacturer or "",
+            }
             for c in chunks
         ],
     )

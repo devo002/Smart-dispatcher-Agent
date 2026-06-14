@@ -92,9 +92,49 @@ python -m src.empire_dispatcher.ingest.build_index
 # 4. Run the API
 uvicorn src.empire_dispatcher.api:app --reload
 
-# 5. Try the wow-factor self-correction demo
-python -m scripts.demo_self_correction
+# 5. Run the evaluation suite (17 cases, all should pass)
+python -m eval.run_evals
 ```
+
+## Evaluation hardening — challenges and fixes
+
+Running the 17-case eval suite exposed two retrieval and extraction bugs that required
+targeted changes to reach a full pass. Both are documented here because they reflect
+real production pitfalls in RAG-based agentic systems.
+
+### Challenge 1 — Semantic embeddings cannot distinguish error codes
+
+**Problem.** The default ChromaDB embedding model (`all-MiniLM-L6-v2`) converts text
+into vectors based on *meaning*, not exact tokens. Error codes like `0x0001`, `501`,
+and `602` look nearly identical in embedding space. A ticket about Huawei error `0x0001`
+(grid loss — no part needed) was consistently retrieving the `HUA-602` KB entry
+(grid overvoltage — part required), causing the wrong diagnosis and a false-positive
+part requirement.
+
+**Fix.** During indexing (`chunk_pdfs.py` + `build_index.py`) each chunk now has its
+error code and manufacturer extracted from the `## HEADING` and stored as ChromaDB
+metadata fields. At query time (`search_manuals.py`), when the triage node has
+identified an error code, a `where` metadata filter is applied *before* the vector
+ranking step — guaranteeing the correct KB entry is returned. If the filter yields no
+results, it falls back to unfiltered vector search so vague tickets (no error code) still
+work.
+
+### Challenge 2 — Fallback SKU scanner extracted conditional parts as required parts
+
+**Problem.** The part-extraction logic in `_extract_part_id` ran two checks: first a
+targeted `Required part: <SKU>` pattern, then a looser fallback that scanned the entire
+chunk text for any SKU-shaped token. KB entries that say *"Required part: None initially;
+`EV-RCD-TYPE-B` if RCD is faulty"* correctly failed the first check, but the fallback
+then picked up `EV-RCD-TYPE-B` and returned it as a required part — causing false
+positives for the EV wallbox ticket (T-10010) and the smoke-smell ticket (T-10016).
+
+**Fix.** A `_REQUIRED_PART_NONE_PATTERN` guard was added at the top of
+`_extract_part_id`. If the chunk explicitly states `Required part: None [...]`, the
+function returns `None` immediately and the fallback SKU scan never runs. This covers
+both the "None." case (definitive no-part) and the "None initially; ..." case
+(conditional parts that should not be pre-ordered without an on-site assessment).
+
+---
 
 ## Why this stack for Empire
 

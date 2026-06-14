@@ -15,6 +15,7 @@ from ..ingest.build_index import COLLECTION_NAME
 class SearchManualsInput(BaseModel):
     query: str = Field(..., description="Natural-language description of the symptom or error code.")
     top_k: int = Field(4, ge=1, le=10)
+    error_code: str | None = None
 
 
 class ManualHit(BaseModel):
@@ -38,7 +39,14 @@ def _collection():
 
 def search_manuals(payload: SearchManualsInput) -> SearchManualsOutput:
     coll = _collection()
-    res = coll.query(query_texts=[payload.query], n_results=payload.top_k)
+    where = {"error_code": {"$eq": payload.error_code.lower()}} if payload.error_code else None
+    try:
+        res = coll.query(query_texts=[payload.query], n_results=payload.top_k, where=where)
+        # If the filter matched nothing, fall back to unfiltered vector search
+        if where and not (res.get("documents") or [[]])[0]:
+            res = coll.query(query_texts=[payload.query], n_results=payload.top_k)
+    except Exception:
+        res = coll.query(query_texts=[payload.query], n_results=payload.top_k)
     hits: list[ManualHit] = []
     docs = (res.get("documents") or [[]])[0]
     metas = (res.get("metadatas") or [[]])[0]

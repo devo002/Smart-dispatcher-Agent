@@ -126,6 +126,9 @@ _SKU_PATTERN = re.compile(r"`?([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})`?")
 _REQUIRED_PART_PATTERN = re.compile(
     r"[Rr]equired\s+part[^a-zA-Z\n]{0,15}([A-Z][A-Z0-9]{1,4}-[A-Z0-9\-]{2,30})"
 )
+_REQUIRED_PART_NONE_PATTERN = re.compile(
+    r"[Rr]equired\s+part[^a-zA-Z\n]{0,15}[Nn]one"
+)
 _PREAMBLE_MARKERS = ("NOTE FOR REVIEWERS", "RAG corpus", "intentionally")
 
 
@@ -135,6 +138,9 @@ def _looks_like_issue_code(token: str) -> bool:
 
 def _extract_part_id(blob: str):
     if not blob:
+        return None
+    # KB explicitly says "Required part: None [...]" — stop here, no part needed.
+    if _REQUIRED_PART_NONE_PATTERN.search(blob):
         return None
     m = _REQUIRED_PART_PATTERN.search(blob)
     if m:
@@ -193,7 +199,11 @@ def research_node(state: DispatchState) -> DispatchState:
         query = f"{query} {state.get('raw_body', '')[:200]}".strip()
     if iteration > 1:
         query = f"workaround firmware fallback alternative fix for {query}"
-    result = search_manuals(SearchManualsInput(query=query, top_k=5))
+    result = search_manuals(SearchManualsInput(
+        query=query,
+        top_k=5,
+        error_code=state.get("error_code") if iteration == 1 else None,
+    ))
     # Use only the top non-workaround hit for part extraction so that lower-ranked
     # hits from unrelated issues cannot pollute the result.
     top_hit = next((h for h in result.hits if not _looks_like_workaround(h.text)), None) or (result.hits[0] if result.hits else None)

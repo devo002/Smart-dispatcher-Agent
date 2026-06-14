@@ -6,7 +6,8 @@ chunk boundaries never cut mid-sentence, preserving semantic coherence for embed
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+import re
+from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Iterable
 
@@ -21,9 +22,34 @@ class Chunk:
     source: str
     page: int | None
     chunk_index: int
+    error_code: str | None = field(default=None)
+    manufacturer: str | None = field(default=None)
 
 
 _splitter = SentenceSplitter(chunk_size=512, chunk_overlap=64)
+
+_KNOWN_MANUFACTURERS = ("Huawei", "SMA", "Fronius", "Goodwe", "Vaillant", "Viessmann")
+
+
+def _heading_meta(heading_line: str) -> tuple[str | None, str | None]:
+    """Extract error_code and manufacturer from a ## section heading line."""
+    # "Error/Warning/State NNN" covers most entries
+    m = re.search(r'\b(?:Error|Warning|State)\s+([\w.]+)', heading_line, re.IGNORECASE)
+    if m:
+        error_code: str | None = m.group(1).lower()
+    else:
+        # Standalone code like "F.22" or "A9" that appears before a "(" e.g. "— F.22 (Low Pressure)"
+        m = re.search(r'—\s+([A-Za-z]\S*)\s+\(', heading_line)
+        error_code = m.group(1).lower() if m and re.search(r'\d', m.group(1)) else None
+
+    manufacturer: str | None = None
+    lower = heading_line.lower()
+    for brand in _KNOWN_MANUFACTURERS:
+        if brand.lower() in lower:
+            manufacturer = brand.lower()
+            break
+
+    return error_code, manufacturer
 
 
 def chunk_pdf(path: Path) -> Iterable[Chunk]:
@@ -49,8 +75,6 @@ def chunk_pdf(path: Path) -> Iterable[Chunk]:
 def chunk_markdown(path: Path) -> Iterable[Chunk]:
     """Split on ## headings and --- separators first to preserve section structure,
     then apply SentenceSplitter within each section."""
-    import re
-
     raw = path.read_text(encoding="utf-8")
 
     top_sections = [s.strip() for s in raw.split("\n---\n") if s.strip()]
@@ -64,11 +88,15 @@ def chunk_markdown(path: Path) -> Iterable[Chunk]:
         # Skip preamble sections that don't start with a ## heading
         if not section.startswith("## ") and not re.search(r"\n## ", section):
             continue
+        heading_line = section.split("\n")[0]
+        error_code, manufacturer = _heading_meta(heading_line)
         for node in _splitter.get_nodes_from_documents([Document(text=section)]):
             yield Chunk(
                 text=node.get_content(),
                 source=path.name,
                 page=None,
                 chunk_index=chunk_idx,
+                error_code=error_code,
+                manufacturer=manufacturer,
             )
             chunk_idx += 1
