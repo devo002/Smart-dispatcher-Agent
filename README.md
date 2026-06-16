@@ -98,8 +98,7 @@ python -m eval.run_evals
 
 ## Evaluation hardening — challenges and fixes
 
-Running the 17-case eval suite exposed two retrieval and extraction bugs that required
-targeted changes to reach a full pass. Both are documented here because they reflect
+Running the 17-case eval suite exposed two retrieval and extraction bugs that required changes and corrections. Both are documented here because they could reflect
 real production pitfalls in RAG-based agentic systems.
 
 ### Challenge 1 — Semantic embeddings cannot distinguish error codes
