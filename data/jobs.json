@@ -610,5 +610,53 @@
     "workaround_applied": null,
     "status": "pending_approval",
     "created_at": "2026-06-14T16:45:28Z"
+  },
+  {
+    "job_id": "JOB-1051",
+    "ticket_id": "T-10009",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-30T16:57:16Z"
+  },
+  {
+    "job_id": "JOB-1052",
+    "ticket_id": "T-10009",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-30T17:15:35Z"
+  },
+  {
+    "job_id": "JOB-1053",
+    "ticket_id": "T-10004",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-30T17:16:23Z"
+  },
+  {
+    "job_id": "JOB-1054",
+    "ticket_id": "T-10005",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [
+      "R290-REFRIG-1KG"
+    ],
+    "diagnosis": "## HP-VAILLANT-F22 — Vaillant aroTHERM — F.22 (Low Pressure)\n\n**Symptom.** Heat pump shows F.22, no heating output, customer reports cold radiators.\n**Root cause.** Refrigerant circuit pressure low, often due to slow leak at brazed\njoint.\n**Field fix.** Pressure-test the refrigerant circuit, locate leak with electronic\ndetector, re-braze joint and recharge with R290.\n**Required part.** `R290-REFRIG-1KG` and `BRAZE-KIT-HP`.\n**Severity.** High. Customer is without heat. Same-day visit required in winter months.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-06-30T17:38:23Z"
   }
 ]

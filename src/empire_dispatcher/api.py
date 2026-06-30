@@ -216,6 +216,38 @@ def reset_job(job_id: str):
     return _set_job_status(job_id, "pending_approval", "reset_by_dispatcher")
 
 
+class ReassignPayload(BaseModel):
+    tech_id: str
+    name: str | None = None
+    region: str | None = None
+    scheduled_date: str | None = None
+    rationale: str | None = None
+
+
+@app.post("/jobs/{job_id}/reassign")
+def reassign_job(job_id: str, payload: ReassignPayload):
+    """Swap the primary technician with a chosen backup."""
+    jobs = _load_jobs()
+    for j in jobs:
+        if j["job_id"] == job_id:
+            plan = j.get("plan") or {}
+            tech = plan.get("technician") or {}
+            tech.update({
+                "tech_id": payload.tech_id,
+                "name": payload.name,
+                "region": payload.region,
+                "scheduled_date": payload.scheduled_date or tech.get("scheduled_date"),
+                "rationale": payload.rationale or "Manually reassigned by dispatcher.",
+            })
+            plan["technician"] = tech
+            j["plan"] = plan
+            j["last_action"] = "reassigned_by_dispatcher"
+            j["last_action_at"] = datetime.utcnow().isoformat(timespec="seconds") + "Z"
+            _save_jobs(jobs)
+            return j
+    raise HTTPException(status_code=404, detail=f"job {job_id} not found")
+
+
 @app.delete("/jobs")
 def clear_all_jobs():
     """Wipe the jobs log — useful during development/testing."""

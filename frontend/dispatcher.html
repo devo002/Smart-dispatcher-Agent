@@ -424,7 +424,7 @@
       );
     }
 
-    function PlanCard({ plan, onApprove, onReject, acting }) {
+    function PlanCard({ plan, onApprove, onReject, onReassign, acting }) {
       const diag = plan.diagnosis || {};
       const part = plan.part || {};
       const tech = plan.technician || {};
@@ -555,11 +555,20 @@
                         <p className="text-[11px] text-stone-500 italic leading-relaxed">{b.rationale}</p>
                       )}
                     </div>
+                    {!statusLocked && (
+                      <button
+                        onClick={() => onReassign(b)}
+                        disabled={!!acting}
+                        className="shrink-0 self-center px-2.5 py-1 text-[11px] font-medium text-blue-700 bg-blue-50 border border-blue-200 rounded hover:bg-blue-100 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                      >
+                        {acting === `reassign-${b.tech_id}` ? "Reassigning…" : "Set as primary"}
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
               <p className="text-[11px] text-stone-400 mt-2">
-                If the primary tech can't make it, manually reassign the job to one of these.
+                Click "Set as primary" to reassign this job to a backup technician.
               </p>
             </Section>
           )}
@@ -792,6 +801,33 @@
         }
       };
 
+      const reassign = async (backup) => {
+        if (!plan?.job_id) return;
+        setActing(`reassign-${backup.tech_id}`);
+        try {
+          const res = await fetch(`${API}/jobs/${plan.job_id}/reassign`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              tech_id: backup.tech_id,
+              name: backup.name,
+              region: backup.region,
+              scheduled_date: backup.next_available,
+              rationale: "Manually reassigned by dispatcher from backup options.",
+            }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const updated = await res.json();
+          setPlan(updated.plan);
+          await refresh();
+          setToast({ tone: "ok", message: `Reassigned to ${backup.name || backup.tech_id}.` });
+        } catch (e) {
+          setToast({ tone: "error", message: `Reassign failed: ${e.message}` });
+        } finally {
+          setActing(null);
+        }
+      };
+
       const clearJobs = async () => {
         if (!confirm("Clear all jobs? This cannot be undone.")) return;
         await fetch(`${API}/jobs`, { method: "DELETE" });
@@ -821,6 +857,7 @@
                       acting={acting}
                       onApprove={() => act("approve")}
                       onReject={() => act("reject")}
+                      onReassign={reassign}
                     />
                   )}
                   {plan && planOutcome === "approved" && (

@@ -8,10 +8,12 @@ prompting; everything else is deterministic Python so it's testable without an A
 from __future__ import annotations
 
 import json
+import math
 import re
 from datetime import date
 
 from anthropic import Anthropic
+from chromadb.utils.embedding_functions import DefaultEmbeddingFunction as _DefaultEmbedFn
 from langchain_core.messages import AIMessage, HumanMessage
 
 from ..config import settings
@@ -29,6 +31,37 @@ from .state import DispatchState
 
 
 MAX_RESEARCH_ITERATIONS = 2
+
+# ---------------------------------------------------------------------------
+# Semantic triage cache — avoids Claude calls for near-identical tickets
+# ---------------------------------------------------------------------------
+_embed_fn = _DefaultEmbedFn()
+_TRIAGE_CACHE: list[tuple[list[float], dict]] = []
+_CACHE_THRESHOLD = 0.92
+_CACHE_MAX = 500
+
+
+def _cosine(a: list[float], b: list[float]) -> float:
+    dot = sum(x * y for x, y in zip(a, b))
+    mag = math.sqrt(sum(x * x for x in a)) * math.sqrt(sum(y * y for y in b))
+    return dot / mag if mag else 0.0
+
+
+def _cache_get(text: str) -> dict | None:
+    if not _TRIAGE_CACHE:
+        return None
+    emb = _embed_fn([text])[0]
+    for cached_emb, result in _TRIAGE_CACHE:
+        if _cosine(emb, cached_emb) >= _CACHE_THRESHOLD:
+            return result
+    return None
+
+
+def _cache_put(text: str, result: dict) -> None:
+    emb = _embed_fn([text])[0]
+    if len(_TRIAGE_CACHE) >= _CACHE_MAX:
+        _TRIAGE_CACHE.pop(0)
+    _TRIAGE_CACHE.append((emb, result))
 
 _TRIAGE_SYSTEM = """You are the triage assistant for Empire, a German residential solar
 + heat-pump company. Your job is to read a (possibly messy, mixed German/English)
@@ -92,6 +125,14 @@ def triage_node(state: DispatchState) -> DispatchState:
             "iteration": 0,
             "messages": [HumanMessage(content=f"Triage (offline mode) for ticket {state.get('ticket_id')}.")],
         }
+    ticket_text = f"{state.get('raw_subject', '')} {state.get('raw_body', '')[:300]}"
+    cached = _cache_get(ticket_text)
+    if cached:
+        return {
+            **cached,
+            "iteration": 0,
+            "messages": [AIMessage(content="Triage: cache hit — skipped Claude call.")],
+        }
     msg = _client().messages.create(
         model=settings.claude_model,
         max_tokens=500,
@@ -103,13 +144,17 @@ def triage_node(state: DispatchState) -> DispatchState:
         data = _extract_json(raw)
     except Exception:
         data = {}
-    return {
+    triage_data = {
         "error_code": data.get("error_code"),
         "manufacturer": data.get("manufacturer"),
         "severity": data.get("severity") or "medium",
         "intent": data.get("intent") or "general",
         "required_skills": data.get("required_skills") or [],
         "detected_language": data.get("detected_language") or "de",
+    }
+    _cache_put(ticket_text, triage_data)
+    return {
+        **triage_data,
         "iteration": 0,
         "messages": [AIMessage(content=f"Triage: {raw}")],
     }
