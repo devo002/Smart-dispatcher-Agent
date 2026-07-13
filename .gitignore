@@ -28,6 +28,10 @@ Thumbs.db
 .vscode/
 .idea/
 
+# Node
+node_modules/
+package-lock.json
+
 # Frontend (when added)
 frontend/node_modules/
 frontend/.next/
