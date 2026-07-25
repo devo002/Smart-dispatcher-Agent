@@ -9,13 +9,17 @@ venv/
 # Env + secrets
 .env
 .env.local
+secret/
 
 # Local data artifacts
 data/chroma/
-data/empire.db
+data/*.db
 data/jobs.json
 *.sqlite
 *.sqlite3
+
+# Interview prep notes (personal, not part of the project)
+interview_prep.md
 
 # LangSmith local cache
 .langsmith/

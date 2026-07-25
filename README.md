@@ -4,9 +4,6 @@ An agentic AI system that triages solar inverter and heat pump support tickets, 
 fixes in technical manuals (RAG), checks spare-part availability, routes the right
 technician, and proposes a dispatch plan for human approval.
 
-Built to demonstrate end-to-end ownership of an MCP + LangGraph + Claude Agent SDK stack
-for a residential energy company workflow.
-
 ## Architecture
 
 ```
@@ -19,7 +16,7 @@ Customer Ticket (DE/EN, messy)
    [Research Node] --> search_manuals  (ChromaDB RAG over PDFs + curated issues)
         |
         v
-   [Inventory Node] --> check_inventory (SQLite over synthetic parts CSV)
+   [Inventory Node] --> check_inventory (live Google Sheets read; SQLite/CSV fallback)
         |
         v
    [Routing Node] --> find_technician  (skill + region + earliest slot)
@@ -68,7 +65,7 @@ Mcp/
 │   └── api.py                  # FastAPI HTTP surface
 │
 ├── eval/                       # LangSmith eval dataset + runner
-├── scripts/                    # Seed data, demo self-correction trace
+├── scripts/                    # Seed data, demo self-correction trace, MCP client demo
 └── frontend/                   # (Next.js dashboard — placeholder)
 ```
 
@@ -96,6 +93,7 @@ uvicorn src.empire_dispatcher.api:app --reload
 python -m eval.run_evals
 ```
 
+
 ## Evaluation hardening — challenges and fixes
 
 Running the 17-case eval suite exposed two retrieval and extraction bugs that required changes and corrections. Both are documented here because they could reflect
@@ -110,6 +108,7 @@ and `602` look nearly identical in embedding space. A ticket about Huawei error 
 (grid overvoltage — part required), causing the wrong diagnosis and a false-positive
 part requirement.
 
+
 **Fix.** During indexing (`chunk_pdfs.py` + `build_index.py`) each chunk now has its
 error code and manufacturer extracted from the `## HEADING` and stored as ChromaDB
 metadata fields. At query time (`search_manuals.py`), when the triage node has
@@ -117,6 +116,8 @@ identified an error code, a `where` metadata filter is applied *before* the vect
 ranking step — guaranteeing the correct KB entry is returned. If the filter yields no
 results, it falls back to unfiltered vector search so vague tickets (no error code) still
 work.
+In summary, fixed a retrieval problem by ensuring the AI retrieves the correct knowledge base entry using exact metadata (manufacturer and error code) before semantic ranking.
+
 
 ### Challenge 2 — Fallback SKU scanner extracted conditional parts as required parts
 
@@ -132,6 +133,8 @@ positives for the EV wallbox ticket (T-10010) and the smoke-smell ticket (T-1001
 function returns `None` immediately and the fallback SKU scan never runs. This covers
 both the "None." case (definitive no-part) and the "None initially; ..." case
 (conditional parts that should not be pre-ordered without an on-site assessment).
+In summary fixed an information extraction problem by preventing the AI from treating conditional or optional replacement parts as mandatory.
+
 
 ---
 

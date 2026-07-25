@@ -23,6 +23,10 @@ uvicorn[standard]>=0.32.0
 pydantic>=2.9.0
 pydantic-settings>=2.5.0
 
+# --- Google Sheets inventory backend ---
+gspread>=6.1.0
+google-auth>=2.30.0
+
 # --- Utilities ---
 python-dotenv>=1.0.0
 langdetect>=1.0.9

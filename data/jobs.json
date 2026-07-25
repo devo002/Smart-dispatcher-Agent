@@ -46,5 +46,77 @@
     "workaround_applied": null,
     "status": "pending_approval",
     "created_at": "2026-07-13T10:36:49Z"
+  },
+  {
+    "job_id": "JOB-1005",
+    "ticket_id": "T-10009",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [],
+    "diagnosis": "## BAT-LFP-OV — Generic LFP Battery — Overvoltage Protection Trip\n\n**Symptom.** Battery shows fault, refuses to charge above 90% SoC.\n**Root cause.** Cell imbalance after long period without full charge cycle.\n**Field fix.** Initiate manual balancing cycle via installer app; allow 12h. If\nimbalance persists, replace BMS.\n**Required part.** None initially; `BAT-BMS-LFP` if balancing fails.\n**Severity.** Low.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-07-25T15:34:53Z"
+  },
+  {
+    "job_id": "JOB-1006",
+    "ticket_id": "T-10002",
+    "tech_id": "T005",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "MC4-GASKET-KIT"
+    ],
+    "diagnosis": "## HUA-501 — Huawei SUN2000 — Error 501 (DC Insulation Fault)\n\n**Symptom.** Yellow status LED, app shows \"DC Insulation Resistance Low.\"\n**Root cause.** Moisture ingress at MC4 connector or damaged PV string cable.\n**Field fix.** Inspect string-side MC4 connectors for water; reseat with new gaskets.\nMeasure insulation resistance with megger; replace damaged cable section if reading\nbelow 1 MOhm.\n**Required part.** `MC4-GASKET-KIT` (in stock) or `PV-CABLE-6MM-50M` (in stock).\n**Severity.** Medium. Schedule within 48h.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-07-25T15:35:05Z"
+  },
+  {
+    "job_id": "JOB-1007",
+    "ticket_id": "T-10003",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [],
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
+    "status": "pending_approval",
+    "created_at": "2026-07-25T15:35:14Z"
+  },
+  {
+    "job_id": "JOB-1008",
+    "ticket_id": "T-10004",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-07-25T15:35:30Z"
+  },
+  {
+    "job_id": "JOB-1009",
+    "ticket_id": "T-10003",
+    "tech_id": "T009",
+    "scheduled_date": "2026-05-04",
+    "parts_to_bring": [],
+    "diagnosis": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the FusionSolar portal.\n\n**Procedure.**\n1. Confirm inverter serial supports SPC135 or later (manufactured 2022 or newer).\n2. Push firmware via FusionSolar; takes ~20 minutes including reboot.\n3. Set \"Grid voltage upper limit\" to 257V in installer settings.\n4. Schedule a follow-up site visit within 60 days to install `HUA-AC-ISO-V2` once\n   restocked.\n\n### SMA-410 fallback\n\nIf `SMA-FAN-ASSY` is unavailable and ambient is mild, derating mode keeps the unit\noperating at reduced output. Customer can be informed; visit can be deferred up to\n14 days without performance penalty.",
+    "workaround_applied": "## Workarounds when primary parts are unavailable\n\n### HUA-602 fallback (firmware route)\n\nIf `HUA-AC-ISO-V2` is out of stock, the Huawei SUN2000 firmware version **V300R001C00SPC135**\nor later includes a configurable grid-voltage tolerance band that can be widened from\nthe default ±10% to ±13%, eliminating the overvoltage trip on long AC runs without a\nhardware swap. This is an Empire-approved temporary workaround pending part\navailability. The firmware update can be pushed remotely from the Fus",
+    "status": "pending_approval",
+    "created_at": "2026-07-25T17:30:32Z"
+  },
+  {
+    "job_id": "JOB-1010",
+    "ticket_id": "T-10004",
+    "tech_id": "T001",
+    "scheduled_date": "2026-05-05",
+    "parts_to_bring": [
+      "SMA-FAN-ASSY"
+    ],
+    "diagnosis": "## SMA-410 — SMA Sunny Boy — Warning 410 (Fan Speed Anomaly)\n\n**Symptom.** Audible fan grinding, occasional thermal derating in summer.\n**Root cause.** Bearing wear on the internal cooling fan.\n**Field fix.** Replace cooling fan assembly.\n**Required part.** `SMA-FAN-ASSY`.\n**Severity.** Low. Schedule at next available slot, system still operating.",
+    "workaround_applied": null,
+    "status": "pending_approval",
+    "created_at": "2026-07-25T17:33:29Z"
   }
 ]

@@ -1,12 +1,16 @@
-"""Inventory lookup against a SQLite mirror of inventory.csv.
+"""Inventory lookup.
 
-The mirror is built lazily on first call (and rebuilt if the CSV is newer than the DB),
-so changing the CSV during development just works.
+Primary backend: live Google Sheets read (so edits made directly in the sheet are
+reflected on the next lookup, no redeploy needed). Falls back to a SQLite mirror of
+inventory.csv when Google Sheets isn't configured or isn't reachable (e.g. local
+tests/CI without credentials), so nothing else in the pipeline needs to know which
+backend actually served the data.
 """
 
 from __future__ import annotations
 
 import sqlite3
+import time
 from datetime import datetime
 from typing import Iterable
 
@@ -63,6 +67,68 @@ REGION_TO_WAREHOUSE = {
 }
 
 
+# ---------------------------------------------------------------------------
+# Google Sheets backend (primary, when configured)
+# ---------------------------------------------------------------------------
+
+_SHEET_CACHE_TTL = 30.0  # seconds — live enough to pick up manual edits quickly,
+                          # cached enough to avoid hitting the Sheets API on every call.
+_sheet_cache: dict = {"rows": None, "fetched_at": 0.0}
+
+
+def _sheets_configured() -> bool:
+    return bool(
+        settings.google_sheets_spreadsheet_id
+        and settings.google_sheets_credentials_path
+        and settings.google_sheets_credentials_path.exists()
+    )
+
+
+def _fetch_from_sheets() -> list[InventoryRow] | None:
+    """Return live inventory rows from Google Sheets, or None on any failure so the
+    caller can fall back to the CSV/SQLite mirror."""
+    now = time.monotonic()
+    cached = _sheet_cache["rows"]
+    if cached is not None and (now - _sheet_cache["fetched_at"]) < _SHEET_CACHE_TTL:
+        return cached
+
+    try:
+        import gspread
+
+        gc = gspread.service_account(filename=str(settings.google_sheets_credentials_path))
+        sh = gc.open_by_key(settings.google_sheets_spreadsheet_id)
+        ws = sh.worksheet(settings.google_sheets_worksheet_name)
+        records = ws.get_all_records()
+    except Exception:
+        return None
+
+    rows: list[InventoryRow] = []
+    for r in records:
+        try:
+            rows.append(
+                InventoryRow(
+                    part_id=str(r["part_id"]).strip(),
+                    part_name=str(r["part_name"]).strip(),
+                    manufacturer=str(r["manufacturer"]).strip(),
+                    compatible_models=str(r["compatible_models"]).strip(),
+                    stock_level=int(r["stock_level"]),
+                    warehouse_location=str(r["warehouse_location"]).strip(),
+                    price_eur=float(r["price_eur"]),
+                    status=str(r["status"]).strip(),
+                )
+            )
+        except (KeyError, ValueError, TypeError):
+            continue  # skip malformed rows (blank lines, header repeats, etc.)
+
+    _sheet_cache["rows"] = rows
+    _sheet_cache["fetched_at"] = now
+    return rows
+
+
+# ---------------------------------------------------------------------------
+# SQLite fallback (CSV mirror, used when Sheets isn't configured/reachable)
+# ---------------------------------------------------------------------------
+
 def _ensure_db() -> sqlite3.Connection:
     db = settings.sqlite_db_path
     csv = settings.inventory_csv
@@ -110,13 +176,7 @@ def _row_to_model(r: Iterable) -> InventoryRow:
     )
 
 
-def check_inventory(payload: CheckInventoryInput) -> CheckInventoryOutput:
-    if not payload.part_id and not payload.query:
-        return CheckInventoryOutput(
-            matches=[],
-            summary="No part_id or query provided; cannot search inventory.",
-        )
-
+def _query_sqlite(payload: CheckInventoryInput) -> list[InventoryRow]:
     con = _ensure_db()
     try:
         cur = con.cursor()
@@ -136,9 +196,41 @@ def check_inventory(payload: CheckInventoryInput) -> CheckInventoryOutput:
                 "ORDER BY stock_level DESC LIMIT 8",
                 (like, like),
             )
-        rows = [_row_to_model(r) for r in cur.fetchall()]
+        return [_row_to_model(r) for r in cur.fetchall()]
     finally:
         con.close()
+
+
+# ---------------------------------------------------------------------------
+# Backend-agnostic query
+# ---------------------------------------------------------------------------
+
+def _query_sheet_rows(payload: CheckInventoryInput, rows: list[InventoryRow]) -> list[InventoryRow]:
+    if payload.part_id:
+        pid = payload.part_id.strip().lower()
+        return [r for r in rows if r.part_id.lower() == pid]
+    q = (payload.query or "").lower()
+    matches = [r for r in rows if q in r.part_name.lower() or q in r.part_id.lower()]
+    matches.sort(key=lambda r: -r.stock_level)
+    return matches[:8]
+
+
+def _query_rows(payload: CheckInventoryInput) -> tuple[list[InventoryRow], str]:
+    if _sheets_configured():
+        sheet_rows = _fetch_from_sheets()
+        if sheet_rows is not None:
+            return _query_sheet_rows(payload, sheet_rows), "google_sheets"
+    return _query_sqlite(payload), "sqlite"
+
+
+def check_inventory(payload: CheckInventoryInput) -> CheckInventoryOutput:
+    if not payload.part_id and not payload.query:
+        return CheckInventoryOutput(
+            matches=[],
+            summary="No part_id or query provided; cannot search inventory.",
+        )
+
+    rows, source = _query_rows(payload)
 
     if not rows:
         return CheckInventoryOutput(
@@ -174,5 +266,8 @@ def check_inventory(payload: CheckInventoryInput) -> CheckInventoryOutput:
     else:
         summary = f"{top.part_name} ({top.part_id}) is currently out of stock."
 
-    summary += f"  ({len(rows)} match{'es' if len(rows) != 1 else ''} total; checked at {datetime.utcnow():%Y-%m-%d %H:%M} UTC.)"
+    summary += (
+        f"  ({len(rows)} match{'es' if len(rows) != 1 else ''} total; "
+        f"source={source}; checked at {datetime.utcnow():%Y-%m-%d %H:%M} UTC.)"
+    )
     return CheckInventoryOutput(matches=rows, summary=summary)

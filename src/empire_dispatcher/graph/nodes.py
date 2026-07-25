@@ -11,10 +11,12 @@ import json
 import math
 import re
 from datetime import date
+from functools import lru_cache
 
 from anthropic import Anthropic
 from chromadb.utils.embedding_functions import DefaultEmbeddingFunction as _DefaultEmbedFn
 from langchain_core.messages import AIMessage, HumanMessage
+from langsmith.wrappers import wrap_anthropic
 
 from ..config import settings
 from ..tools import (
@@ -86,8 +88,12 @@ Rules:
 """
 
 
+@lru_cache(maxsize=1)
 def _client() -> Anthropic:
-    return Anthropic(api_key=settings.anthropic_api_key)
+    # wrap_anthropic patches the client so its calls appear as nested spans (with
+    # full prompt/response/token usage) inside the LangSmith trace for this node,
+    # instead of being invisible to tracing like a raw SDK call would be.
+    return wrap_anthropic(Anthropic(api_key=settings.anthropic_api_key))
 
 
 def _extract_json(text: str) -> dict:
