@@ -62,6 +62,41 @@ def _check(case: dict, final: dict) -> tuple[bool, list[str]]:
     return (len(fails) == 0, fails)
 
 
+def _check_retrieval_hit_rate(case: dict, final: dict) -> tuple[bool | None, str]:
+    """Hit Rate@5 for the retrieval step, evaluated independently of triage/extraction.
+
+    Ground truth: the case's expected_error_code. "Hit" means that code appears among
+    the error_code metadata of the chunks retrieved on the first (diagnostic) research
+    pass (top_k=5) — regardless of what the downstream part-extraction regex later did
+    with them. Cases without an expected_error_code (billing/reschedule/no-KB-entry
+    tickets) have nothing to retrieve, so they're marked n/a rather than scored.
+    """
+    want = case.get("expected_error_code")
+    if not want:
+        return None, "n/a (no expected_error_code)"
+    want = want.lower()
+    retrieved = [c.lower() for c in (final.get("retrieved_error_codes") or [])]
+    hit = any(want in r or r in want for r in retrieved)
+    return hit, f"retrieved={retrieved or []}"
+
+
+def _check_precision_at_1(case: dict, final: dict) -> tuple[bool | None, str]:
+    """Precision@1: is the single hit the pipeline actually acted on (top_hit) correct —
+    not just present somewhere in the top-5.
+
+    A case can pass Hit Rate@5 (right chunk was retrieved) while failing this (a wrong
+    chunk outranked it and got selected instead) — that gap is exactly what this metric
+    is for. Same n/a rule as Hit Rate@5: only scored when a ground-truth code exists.
+    """
+    want = case.get("expected_error_code")
+    if not want:
+        return None, "n/a (no expected_error_code)"
+    want = want.lower()
+    selected = (final.get("selected_error_code") or "").lower()
+    hit = bool(selected) and (want in selected or selected in want)
+    return hit, f"selected={selected or None}"
+
+
 def main() -> None:
     console = Console()
     cases = json.loads(Path("eval/eval_dataset.json").read_text(encoding="utf-8"))
@@ -69,30 +104,68 @@ def main() -> None:
 
     table = Table(title=f"Eval — {len(cases)} cases", show_lines=False)
     table.add_column("ticket")
-    table.add_column("pass", justify="center")
+    table.add_column("task", justify="center")
+    table.add_column("retrieval@5", justify="center")
+    table.add_column("precision@1", justify="center")
     table.add_column("notes")
 
     passed = 0
+    retrieval_applicable = 0
+    retrieval_hits = 0
+    precision_applicable = 0
+    precision_hits = 0
     for case in cases:
         ticket = tickets.get(case["ticket_id"])
         if not ticket:
-            table.add_row(case["ticket_id"], "[red]MISSING[/]", "ticket not in tickets.json")
+            table.add_row(case["ticket_id"], "[red]MISSING[/]", "-", "-", "ticket not in tickets.json")
             continue
         try:
             final = triage_ticket(ticket)
         except Exception as e:
-            table.add_row(case["ticket_id"], "[red]ERROR[/]", str(e)[:80])
+            table.add_row(case["ticket_id"], "[red]ERROR[/]", "-", "-", str(e)[:80])
             continue
+
         ok, fails = _check(case, final)
+        hit, hit_detail = _check_retrieval_hit_rate(case, final)
+        if hit is not None:
+            retrieval_applicable += 1
+            retrieval_hits += int(hit)
+        retrieval_cell = "n/a" if hit is None else ("[green]✓[/]" if hit else "[red]✗[/]")
+
+        prec, prec_detail = _check_precision_at_1(case, final)
+        if prec is not None:
+            precision_applicable += 1
+            precision_hits += int(prec)
+        precision_cell = "n/a" if prec is None else ("[green]✓[/]" if prec else "[red]✗[/]")
+
         if ok:
             passed += 1
-            table.add_row(case["ticket_id"], "[green]✓[/]", case.get("notes", ""))
+            task_cell = "[green]✓[/]"
+            notes = case.get("notes", "")
         else:
-            table.add_row(case["ticket_id"], "[red]✗[/]", " | ".join(fails))
+            task_cell = "[red]✗[/]"
+            notes = " | ".join(fails)
+        if hit is False:
+            notes = f"{notes} | retrieval miss: {hit_detail}".strip(" |")
+        if prec is False:
+            notes = f"{notes} | precision@1 miss: {prec_detail}".strip(" |")
+        table.add_row(case["ticket_id"], task_cell, retrieval_cell, precision_cell, notes)
 
     console.print(table)
     color = "green" if passed == len(cases) else "yellow"
-    console.rule(f"[bold {color}]{passed}/{len(cases)} passed[/]")
+    console.rule(f"[bold {color}]Task Success Rate: {passed}/{len(cases)} passed[/]")
+    if retrieval_applicable:
+        rcolor = "green" if retrieval_hits == retrieval_applicable else "yellow"
+        console.rule(
+            f"[bold {rcolor}]Retrieval Hit Rate@5: {retrieval_hits}/{retrieval_applicable} "
+            f"({retrieval_applicable} of {len(cases)} cases have a ground-truth error code)[/]"
+        )
+    if precision_applicable:
+        pcolor = "green" if precision_hits == precision_applicable else "yellow"
+        console.rule(
+            f"[bold {pcolor}]Precision@1: {precision_hits}/{precision_applicable} "
+            f"({precision_applicable} of {len(cases)} cases have a ground-truth error code)[/]"
+        )
 
 
 if __name__ == "__main__":

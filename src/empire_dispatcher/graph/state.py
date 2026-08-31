@@ -26,6 +26,8 @@ class DispatchState(TypedDict, total=False):
     candidate_fix: str | None
     required_part_id: str | None
     required_skills: list[str]
+    retrieved_error_codes: list[str]  # error_code metadata of iteration-1 hits; ground truth source for retrieval Hit Rate@k eval
+    selected_error_code: str | None   # error_code of the single hit the pipeline actually acted on (top_hit); ground truth source for Precision@1 eval
 
     # --- Inventory output ---
     part_in_stock: bool | None

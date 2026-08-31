@@ -23,6 +23,8 @@ class ManualHit(BaseModel):
     source: str
     page: int | None
     score: float
+    error_code: str | None = None
+    manufacturer: str | None = None
 
 
 class SearchManualsOutput(BaseModel):
@@ -59,6 +61,8 @@ def search_manuals(payload: SearchManualsInput) -> SearchManualsOutput:
                 source=str(meta.get("source", "unknown")),
                 page=None if page in (None, -1) else int(page),
                 score=float(1.0 / (1.0 + dist)) if dist is not None else 0.0,
+                error_code=meta.get("error_code") or None,
+                manufacturer=meta.get("manufacturer") or None,
             )
         )
     return SearchManualsOutput(query=payload.query, hits=hits)

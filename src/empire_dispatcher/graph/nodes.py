@@ -277,11 +277,30 @@ def research_node(state: DispatchState) -> DispatchState:
     else:
         fix_hit = result.hits[0] if result.hits else None
     candidate_fix = fix_hit.text[:1500] if fix_hit else None
+    # Captured only on the first (diagnostic) pass so the self-correction pass's
+    # workaround-oriented query doesn't overwrite the ground truth for Hit Rate@k eval.
+    retrieved_error_codes = (
+        [h.error_code for h in result.hits if h.error_code]
+        if iteration == 1
+        else (state.get("retrieved_error_codes") or [])
+    )
+    # error_code of top_hit specifically — the one hit the pipeline actually acts on
+    # (drives required_part_id) — vs. retrieved_error_codes above, which is all 5
+    # candidates regardless of which one got used. This is the ground truth for
+    # Precision@1: Hit Rate@k can pass while this still fails if the right chunk was
+    # retrieved but ranked below a wrong one that got selected instead.
+    selected_error_code = (
+        (top_hit.error_code if top_hit else None)
+        if iteration == 1
+        else state.get("selected_error_code")
+    )
     return {
         "iteration": iteration,
         "candidate_fix": candidate_fix,
         "required_part_id": required_part_id if iteration == 1 else state.get("required_part_id"),
         "workaround": workaround_text or state.get("workaround"),
+        "retrieved_error_codes": retrieved_error_codes,
+        "selected_error_code": selected_error_code,
         "messages": [AIMessage(content=f"Research[{iteration}] query={query!r} hits={len(result.hits)}")],
     }
 

@@ -73,6 +73,11 @@ REGION_TO_WAREHOUSE = {
 
 _SHEET_CACHE_TTL = 30.0  # seconds — live enough to pick up manual edits quickly,
                           # cached enough to avoid hitting the Sheets API on every call.
+_SHEET_STALE_TTL = 300.0  # seconds — on a failed fetch (all retries exhausted), still
+                           # serve the last known-good rows for up to 5 minutes rather
+                           # than falling straight to the (possibly much staler) SQLite/CSV mirror.
+_SHEET_FETCH_ATTEMPTS = 3
+_SHEET_RETRY_BACKOFF = (0.5, 1.5)  # seconds to wait before attempt 2 and attempt 3
 _sheet_cache: dict = {"rows": None, "fetched_at": 0.0}
 
 
@@ -92,14 +97,26 @@ def _fetch_from_sheets() -> list[InventoryRow] | None:
     if cached is not None and (now - _sheet_cache["fetched_at"]) < _SHEET_CACHE_TTL:
         return cached
 
-    try:
-        import gspread
+    records = None
+    for attempt in range(_SHEET_FETCH_ATTEMPTS):
+        try:
+            import gspread
 
-        gc = gspread.service_account(filename=str(settings.google_sheets_credentials_path))
-        sh = gc.open_by_key(settings.google_sheets_spreadsheet_id)
-        ws = sh.worksheet(settings.google_sheets_worksheet_name)
-        records = ws.get_all_records()
-    except Exception:
+            gc = gspread.service_account(filename=str(settings.google_sheets_credentials_path))
+            sh = gc.open_by_key(settings.google_sheets_spreadsheet_id)
+            ws = sh.worksheet(settings.google_sheets_worksheet_name)
+            records = ws.get_all_records()
+            break
+        except Exception:
+            if attempt < _SHEET_FETCH_ATTEMPTS - 1:
+                time.sleep(_SHEET_RETRY_BACKOFF[attempt])
+
+    if records is None:
+        # All attempts failed — serve the last known-good rows if they're still
+        # within the (longer) stale-on-failure window, instead of dropping straight
+        # to the SQLite/CSV mirror.
+        if cached is not None and (now - _sheet_cache["fetched_at"]) < _SHEET_STALE_TTL:
+            return cached
         return None
 
     rows: list[InventoryRow] = []
