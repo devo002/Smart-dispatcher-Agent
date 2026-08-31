@@ -16,7 +16,8 @@ Customer Ticket (DE/EN, messy)
    [Research Node] --> search_manuals  (ChromaDB RAG over PDFs + curated issues)
         |
         v
-   [Inventory Node] --> check_inventory (live Google Sheets read; SQLite/CSV fallback)
+   [Inventory Node] --> check_inventory (live Google Sheets read, 3 retries;
+                        5-min stale cache, then SQLite/CSV fallback)
         |
         v
    [Routing Node] --> find_technician  (skill + region + earliest slot)
@@ -134,6 +135,26 @@ function returns `None` immediately and the fallback SKU scan never runs. This c
 both the "None." case (definitive no-part) and the "None initially; ..." case
 (conditional parts that should not be pre-ordered without an on-site assessment).
 In summary fixed an information extraction problem by preventing the AI from treating conditional or optional replacement parts as mandatory.
+
+
+### Challenge 3 — No retry/fallback resilience on the Google Sheets inventory read
+
+**Problem.** `check_inventory`'s live Google Sheets backend (`_fetch_from_sheets`)
+wrapped the `gspread` call in a bare `except Exception: return None`. Any failure —
+a network blip, a Sheets API rate limit, a transient auth hiccup — dropped straight
+to the SQLite mirror on the very first try, with no retry. The SQLite mirror is only
+rebuilt from `inventory.csv` when that file changes, so during a live outage the
+agent would silently start quoting stock levels from a stale snapshot instead of the
+live sheet, with no signal that a fallback had occurred.
+
+**Fix.** `_fetch_from_sheets` now retries the live call up to **3 attempts**, with a
+short backoff (0.5s, then 1.5s) between failures, before giving up. If all 3 attempts
+fail, it serves the last successfully-fetched rows if they're **under 5 minutes old**
+(`_SHEET_STALE_TTL`) instead of falling straight to SQLite/CSV. This is a separate,
+longer window from the normal-path cache (`_SHEET_CACHE_TTL`, still 30s) used on the
+happy path to avoid hitting the Sheets API on every lookup — so live sheet edits still
+surface within 30s under normal operation, and only a genuine outage triggers the
+5-minute stale-serve grace period before falling back to the CSV mirror.
 
 
 ---
