@@ -127,6 +127,48 @@
     // ─────────────────────────────────────────────────────────────────────
     const cls = (...xs) => xs.filter(Boolean).join(" ");
 
+    // Consumes POST /tickets/triage/stream (Server-Sent Events). Browsers' native
+    // EventSource only supports GET, so we drive the SSE parsing by hand over a
+    // fetch() ReadableStream: buffer bytes, split on blank-line-terminated "event:
+    // .../data: ..." blocks, and yield {node, data} pairs as the backend graph
+    // actually completes each node — no client-side timing guesses involved.
+    async function* streamTriage(payload) {
+      const res = await fetch(`${API}/tickets/triage/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+
+        let sep;
+        while ((sep = buffer.indexOf("\n\n")) !== -1) {
+          const block = buffer.slice(0, sep);
+          buffer = buffer.slice(sep + 2);
+          if (!block.trim()) continue;
+
+          let node = "message";
+          let dataLine = "";
+          for (const line of block.split("\n")) {
+            if (line.startsWith("event:")) node = line.slice(6).trim();
+            else if (line.startsWith("data:")) dataLine = line.slice(5).trim();
+          }
+          let data = {};
+          try { data = dataLine ? JSON.parse(dataLine) : {}; } catch { /* ignore malformed frame */ }
+
+          yield { node, data };
+          if (node === "done") return;
+        }
+      }
+    }
+
     const SEVERITY_STYLE = {
       high:   "bg-rose-100 text-rose-700 border-rose-200",
       medium: "bg-amber-100 text-amber-700 border-amber-200",
@@ -637,6 +679,9 @@
     }
 
     const PIPELINE_STEPS = ["Triage", "Research", "Inventory", "Routing", "Decision", "Schedule"];
+    // SSE `event:` names are the LangGraph node ids (graph/workflow.py) — lowercase
+    // versions of the labels above.
+    const PIPELINE_NODE_INDEX = Object.fromEntries(PIPELINE_STEPS.map((s, i) => [s.toLowerCase(), i]));
 
     function PlanSkeleton() {
       const [step, setStep] = React.useState(0);
@@ -923,21 +968,16 @@
         setStep(0);
         setPhase("running");
 
-        // The step trail must play through every stage — including a beat
-        // where the final stage itself shows done (all-green) — before the
-        // ticket "settles" (technician revealed, feed paused) here, even if
-        // the real triage call finishes early. stepCount runs
-        // 1..PIPELINE_STEPS.length; the last value has no step index equal
-        // to it, so DemoStepTrail renders every stage as done ("i < step"
-        // is true for all i) instead of the last one staying stuck active.
+        // Driven by the real /tickets/triage/stream SSE feed: the trail advances
+        // exactly when the backend graph actually finishes each node, no client-side
+        // timing guesses. `maxStep` only moves forward — a self-correction loop can
+        // revisit an earlier node (e.g. inventory -> research), and some nodes can
+        // be skipped by conditional routing, but the trail should never regress.
         const totalTicks = PIPELINE_STEPS.length;
-        let stepCount = 0;
-        let fetchDone = false;
-        let settled = false;
+        let maxStep = 0;
 
-        const maybeSettle = () => {
-          if (settled || stoppedRef.current || !fetchDone || stepCount < totalTicks) return;
-          settled = true;
+        const settle = () => {
+          if (stoppedRef.current) return;
           setAllStepsShown(true);
           track(setTimeout(() => {
             if (stoppedRef.current) return;
@@ -945,44 +985,36 @@
           }, DEMO_RESULT_DISPLAY_MS));
         };
 
-        const stepTimer = track(setInterval(() => {
-          stepCount = Math.min(stepCount + 1, totalTicks);
-          setStep(stepCount);
-          if (stepCount >= totalTicks) {
-            clearInterval(stepTimer);
-            // Hold on the all-green frame for one more beat so it actually
-            // paints before we (maybe) settle straight away.
-            track(setTimeout(() => {
-              if (stoppedRef.current) return;
-              maybeSettle();
-            }, DEMO_STEP_INTERVAL_MS));
-          }
-        }, DEMO_STEP_INTERVAL_MS));
-
         try {
-          const res = await fetch(`${API}/tickets/triage`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              ticket_id: ticket.ticket_id,
-              customer_name: ticket.customer_name,
-              customer_region: ticket.customer_region,
-              subject: ticket.subject,
-              body: ticket.body,
-            }),
-          });
-          if (stoppedRef.current) return;
-          if (!res.ok) throw new Error(`HTTP ${res.status}`);
-          const data = await res.json();
-          if (stoppedRef.current) return;
-          setLivePlan(data.plan || null); // let the progressive preview start rendering right away
+          for await (const { node, data } of streamTriage({
+            ticket_id: ticket.ticket_id,
+            customer_name: ticket.customer_name,
+            customer_region: ticket.customer_region,
+            subject: ticket.subject,
+            body: ticket.body,
+          })) {
+            if (stoppedRef.current) return;
+            if (node === "done") break;
+            const idx = PIPELINE_NODE_INDEX[node];
+            if (idx !== undefined) {
+              maxStep = Math.max(maxStep, idx + 1);
+              setStep(maxStep);
+            }
+            if (data && data.plan) setLivePlan(data.plan); // decision/schedule nodes ship the full plan
+          }
         } catch (e) {
           if (stoppedRef.current) return;
           setLiveError(e.message);
         }
 
-        fetchDone = true;
-        maybeSettle();
+        if (stoppedRef.current) return;
+        // Mark every stage done regardless of exactly which node names fired
+        // (e.g. an administrative ticket skips straight from triage to decision).
+        setStep(totalTicks);
+        track(setTimeout(() => {
+          if (stoppedRef.current) return;
+          settle();
+        }, DEMO_STEP_INTERVAL_MS));
       };
 
       React.useEffect(() => {

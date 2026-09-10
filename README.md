@@ -157,6 +157,25 @@ surface within 30s under normal operation, and only a genuine outage triggers th
 5-minute stale-serve grace period before falling back to the CSV mirror.
 
 
+### Challenge 4 — LangSmith's Anthropic wrapper crashed every triage call in production
+
+**Problem.** `_client()` (`graph/nodes.py`) unconditionally wrapped the Anthropic
+client with LangSmith's `wrap_anthropic` for tracing. On a fresh Railway build,
+`requirements.txt` pulled the latest `anthropic` SDK, which had dropped the legacy
+`client.completions` resource — but the resolved `langsmith` version's `wrap_anthropic`
+still unconditionally patched `client.completions.create`, raising
+`AttributeError: 'Anthropic' object has no attribute 'completions'` and turning every
+`POST /tickets/triage` call into a 500. It looked intermittent (only a later ticket
+failed while earlier ones showed "Done") purely because `triage_node` checks a cache
+before calling `_client()` — the first few tickets were cache hits from a prior run and
+never touched the broken code path; the first cache miss is what surfaced the crash.
+
+**Fix.** `_client()` now only calls `wrap_anthropic` when LangSmith tracing is actually
+enabled (`settings.langsmith_tracing` + an API key configured), and falls back to a
+plain, unwrapped `Anthropic` client if the wrapper itself raises `AttributeError`. Tracing
+is a nice-to-have; it should never be able to take down the core triage path when the
+tracing and inference SDKs drift out of sync.
+
 ---
 
 ## Why this stack for Empire

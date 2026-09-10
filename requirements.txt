@@ -1,34 +1,42 @@
+# Exact-pinned to a known-working combination (verified locally end-to-end,
+# incl. a real Claude triage call through LangSmith tracing) after an unpinned
+# `anthropic>=` float pulled a release that dropped the legacy `completions`
+# resource out from under `langsmith`'s `wrap_anthropic`, 500-ing every
+# /tickets/triage call in production (see README "Challenge 4"). Pinning
+# stops that class of drift between interacting packages; bump deliberately
+# and re-verify a real triage call locally before deploying.
+
 # --- Core agent stack ---
-claude-agent-sdk>=0.1.0
-anthropic>=0.40.0
+claude-agent-sdk==0.1.73
+anthropic==0.99.0
 
 # --- Orchestration ---
-langgraph>=0.2.50
-langchain-core>=0.3.0
-langsmith>=0.1.140
+langgraph==1.1.10
+langchain-core==1.3.2
+langsmith==0.8.0
 
 # --- MCP server ---
-mcp>=1.0.0
-fastmcp>=0.4.0
+mcp==1.27.0
+fastmcp==3.2.4
 
 # --- RAG ---
-chromadb>=0.5.0
-pypdf>=5.0.0
-llama-index-core>=0.12.0
+chromadb==1.5.9
+pypdf==6.10.2
+llama-index-core==0.14.22
 
 # --- Data + API ---
-pandas>=2.2.0
-fastapi>=0.115.0
-uvicorn[standard]>=0.32.0
-pydantic>=2.9.0
-pydantic-settings>=2.5.0
+pandas==2.3.3
+fastapi==0.136.1
+uvicorn[standard]==0.46.0
+pydantic==2.13.3
+pydantic-settings==2.14.0
 
 # --- Google Sheets inventory backend ---
-gspread>=6.1.0
-google-auth>=2.30.0
+gspread==6.2.1
+google-auth==2.56.2
 
 # --- Utilities ---
-python-dotenv>=1.0.0
-langdetect>=1.0.9
-rich>=13.9.0          # pretty CLI demo output
-typer>=0.12.0         # demo script CLI
+python-dotenv==1.2.2
+langdetect==1.0.9
+rich==15.0.0            # pretty CLI demo output
+typer==0.25.1           # demo script CLI
