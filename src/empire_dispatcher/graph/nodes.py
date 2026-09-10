@@ -90,10 +90,19 @@ Rules:
 
 @lru_cache(maxsize=1)
 def _client() -> Anthropic:
-    # wrap_anthropic patches the client so its calls appear as nested spans (with
-    # full prompt/response/token usage) inside the LangSmith trace for this node,
-    # instead of being invisible to tracing like a raw SDK call would be.
-    return wrap_anthropic(Anthropic(api_key=settings.anthropic_api_key))
+    client = Anthropic(api_key=settings.anthropic_api_key)
+    if not (settings.langsmith_tracing and settings.langsmith_api_key):
+        return client
+    try:
+        # wrap_anthropic patches the client so its calls appear as nested spans (with
+        # full prompt/response/token usage) inside the LangSmith trace for this node,
+        # instead of being invisible to tracing like a raw SDK call would be.
+        return wrap_anthropic(client)
+    except AttributeError:
+        # anthropic/langsmith version drift (e.g. langsmith's wrapper still patching
+        # a legacy client.completions resource that a newer anthropic SDK dropped).
+        # Tracing is a nice-to-have; don't let it take down every triage call.
+        return client
 
 
 def _extract_json(text: str) -> dict:
