@@ -10,6 +10,7 @@ the LangSmith UI.
 from __future__ import annotations
 
 import json
+import sys
 from pathlib import Path
 
 from rich.console import Console
@@ -166,6 +167,9 @@ def main() -> None:
             f"[bold {pcolor}]Precision@1: {precision_hits}/{precision_applicable} "
             f"({precision_applicable} of {len(cases)} cases have a ground-truth error code)[/]"
         )
+
+    if passed != len(cases):
+        sys.exit(1)
 
 
 if __name__ == "__main__":
