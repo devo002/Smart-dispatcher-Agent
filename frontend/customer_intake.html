@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empire Support — Submit a Request</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.22.20/babel.min.js"></script>
+  <script src="https://unpkg.com/marked@12.0.2/marked.min.js"></script>
+  <script src="https://unpkg.com/dompurify@3.1.5/dist/purify.min.js"></script>
+  <style>
+    body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    .reveal { animation: fadeInUp 0.3s ease both; }
+    .md h1, .md h2, .md h3 { font-weight: 600; margin: 0.5em 0 0.25em; font-size: 0.9rem; }
+    .md p { margin: 0.35em 0; }
+    .md strong { font-weight: 600; }
+    .md code { background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 0.25em; font-size: 0.85em; }
+    .md ol, .md ul { margin: 0.3em 0 0.3em 1.1em; }
+  </style>
+</head>
+<body class="bg-stone-50">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react" data-type="module">
+    const { useState } = React;
+    const API = "";
+    const cls = (...xs) => xs.filter(Boolean).join(" ");
+
+    const REGIONS = ["Berlin", "Munich", "Hamburg", "Frankfurt", "Stuttgart", "Cologne", "Düsseldorf"];
+
+    // Customer-friendly stage labels — deliberately not the internal LangGraph
+    // node names (a customer doesn't need to know what "inventory_node" means).
+    const STAGE_LABELS = {
+      triage: "Reviewing your message",
+      research: "Looking up possible fixes",
+      inventory: "Checking parts availability",
+      routing: "Finding an available technician",
+      decision: "Preparing your service plan",
+      schedule: "Finalizing",
+    };
+    const STAGE_ORDER = ["triage", "research", "inventory", "routing", "decision", "schedule"];
+
+    // Same SSE-over-fetch pattern as the dispatcher dashboard: EventSource can't
+    // do POST, so parse "event: .../data: ..." frames off a ReadableStream by hand.
+    async function* streamTriage(payload) {
+      const res = await fetch(`${API}/tickets/triage/stream`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const reader = res.body.getReader();
+      const decoder = new TextDecoder();
+      let buffer = "";
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        buffer += decoder.decode(value, { stream: true });
+        let sep;
+        while ((sep = buffer.indexOf("\n\n")) !== -1) {
+          const block = buffer.slice(0, sep);
+          buffer = buffer.slice(sep + 2);
+          if (!block.trim()) continue;
+          let node = "message", dataLine = "";
+          for (const line of block.split("\n")) {
+            if (line.startsWith("event:")) node = line.slice(6).trim();
+            else if (line.startsWith("data:")) dataLine = line.slice(5).trim();
+          }
+          let data = {};
+          try { data = dataLine ? JSON.parse(dataLine) : {}; } catch {}
+          yield { node, data };
+          if (node === "done") return;
+        }
+      }
+    }
+
+    function StageTrail({ stage }) {
+      const idx = STAGE_ORDER.indexOf(stage);
+      return (
+        <div className="space-y-2.5">
+          {STAGE_ORDER.map((s, i) => {
+            const done = idx > i || stage === "done";
+            const active = s === stage;
+            return (
+              <div key={s} className="flex items-center gap-3 text-sm">
+                <span className={cls(
+                  "flex items-center justify-center w-5 h-5 rounded-full text-[11px] font-medium shrink-0",
+                  done ? "bg-emerald-500 text-white" :
+                  active ? "bg-stone-900 text-white" : "bg-stone-200 text-stone-400"
+                )}>
+                  {done ? "✓" : i + 1}
+                </span>
+                <span className={cls(done || active ? "text-stone-800" : "text-stone-400")}>
+                  {STAGE_LABELS[s]}
+                  {active && <span className="ml-1.5 inline-block animate-pulse">…</span>}
+                </span>
+              </div>
+            );
+          })}
+        </div>
+      );
+    }
+
+    function ResultCard({ plan }) {
+      const diag = plan.diagnosis || {};
+      const part = plan.part || {};
+      const tech = plan.technician || {};
+      return (
+        <div className="reveal space-y-4">
+          <div className="flex items-center gap-2 text-emerald-700 bg-emerald-50 border border-emerald-200 rounded-lg px-3.5 py-2.5 text-sm">
+            <span>✓</span> Your request has been reviewed and a plan has been prepared.
+          </div>
+
+          {diag.summary && (
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-stone-400 mb-1">What we found</div>
+              <div
+                className="md text-sm text-stone-700 leading-relaxed"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(marked.parse(
+                    diag.summary.length > 600 ? diag.summary.slice(0, 600) + "…" : diag.summary
+                  )),
+                }}
+              />
+            </div>
+          )}
+
+          {part.part_id && (
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-stone-400 mb-1">Part needed</div>
+              <p className="text-sm text-stone-700">
+                <span className="font-mono text-xs bg-stone-100 px-1.5 py-0.5 rounded">{part.part_id}</span>{" "}
+                {part.in_stock ? <span className="text-emerald-700">— in stock</span> : <span className="text-amber-700">— {part.status || "checking availability"}</span>}
+              </p>
+            </div>
+          )}
+
+          {tech.name && (
+            <div>
+              <div className="text-[11px] font-semibold uppercase tracking-wider text-stone-400 mb-1">Technician</div>
+              <p className="text-sm text-stone-700">
+                {tech.name} {tech.scheduled_date && <>— tentatively <strong>{tech.scheduled_date}</strong></>}
+              </p>
+            </div>
+          )}
+
+          <div className="text-xs text-stone-400 border-t border-stone-200 pt-3">
+            This plan is pending review by our dispatch team before it's confirmed — we'll be in touch.
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [form, setForm] = useState({ customer_name: "", customer_region: "Berlin", subject: "", body: "" });
+      const [phase, setPhase] = useState("form"); // form | running | done | error
+      const [stage, setStage] = useState(null);
+      const [plan, setPlan] = useState(null);
+      const [error, setError] = useState(null);
+
+      const set = (k) => (e) => setForm(f => ({ ...f, [k]: e.target.value }));
+      const valid = form.customer_name.trim() && form.subject.trim() && form.body.trim();
+
+      const submit = async (e) => {
+        e.preventDefault();
+        if (!valid || phase === "running") return;
+        setPhase("running");
+        setError(null);
+        setStage("triage");
+        try {
+          for await (const { node, data } of streamTriage(form)) {
+            if (node === "done") break;
+            if (STAGE_ORDER.includes(node)) setStage(node);
+            if (data && data.plan) setPlan(data.plan);
+          }
+          setStage("done");
+          setPhase("done");
+        } catch (err) {
+          setError(err.message);
+          setPhase("error");
+        }
+      };
+
+      const reset = () => {
+        setForm({ customer_name: "", customer_region: "Berlin", subject: "", body: "" });
+        setPhase("form"); setStage(null); setPlan(null); setError(null);
+      };
+
+      return (
+        <div className="min-h-screen flex items-center justify-center px-4 py-10">
+          <div className="w-full max-w-lg bg-white border border-stone-200 rounded-2xl shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-stone-200">
+              <h1 className="text-base font-semibold text-stone-900">Submit a support request</h1>
+              <p className="text-xs text-stone-500 mt-0.5">Tell us what's going on — we'll take a look right away.</p>
+            </div>
+
+            <div className="px-6 py-6">
+              {phase === "form" && (
+                <form onSubmit={submit} className="space-y-4">
+                  <div>
+                    <label className="block text-xs font-medium text-stone-600 mb-1">Your name</label>
+                    <input
+                      value={form.customer_name} onChange={set("customer_name")}
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400"
+                      placeholder="Jane Doe" required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-stone-600 mb-1">Region</label>
+                    <select
+                      value={form.customer_region} onChange={set("customer_region")}
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400 bg-white"
+                    >
+                      {REGIONS.map(r => <option key={r} value={r}>{r}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-stone-600 mb-1">Subject</label>
+                    <input
+                      value={form.subject} onChange={set("subject")}
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400"
+                      placeholder="Solar inverter not working" required
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-xs font-medium text-stone-600 mb-1">What's happening?</label>
+                    <textarea
+                      value={form.body} onChange={set("body")} rows={5}
+                      className="w-full rounded-lg border border-stone-300 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400 resize-none"
+                      placeholder="Describe the problem — any error codes, when it started, etc."
+                      required
+                    />
+                  </div>
+                  <button
+                    type="submit" disabled={!valid}
+                    className="w-full py-2.5 rounded-lg bg-stone-900 text-white text-sm font-medium disabled:opacity-40 hover:bg-stone-800 transition"
+                  >
+                    Submit request
+                  </button>
+                </form>
+              )}
+
+              {(phase === "running" || (phase === "done" && !plan)) && (
+                <div className="py-2">
+                  <StageTrail stage={stage} />
+                </div>
+              )}
+
+              {phase === "done" && plan && <ResultCard plan={plan} />}
+
+              {phase === "error" && (
+                <div className="space-y-3">
+                  <div className="text-sm text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3.5 py-2.5">
+                    Something went wrong: {error}
+                  </div>
+                </div>
+              )}
+
+              {(phase === "done" || phase === "error") && (
+                <button
+                  onClick={reset}
+                  className="mt-5 w-full py-2 rounded-lg border border-stone-300 text-sm text-stone-700 hover:bg-stone-50 transition"
+                >
+                  Submit another request
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>

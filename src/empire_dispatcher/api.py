@@ -12,6 +12,9 @@ Endpoints:
     GET  /jobs/{job_id}            -> single job detail
     POST /jobs/{job_id}/approve    -> dispatcher approves dispatch (status -> 'scheduled')
     POST /jobs/{job_id}/reject     -> dispatcher rejects (status -> 'rejected')
+    GET  /assistant                -> serves the staff assistant chat UI
+    POST /assistant/ask            -> free-form Q&A; Claude picks which lookup tool(s) to call via MCP
+    GET  /intake                   -> serves the customer ticket-submission form
 """
 
 from __future__ import annotations
@@ -20,6 +23,7 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import AsyncIterator
+from uuid import uuid4
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -29,6 +33,7 @@ from pydantic import BaseModel, Field
 from .agent import triage_ticket, triage_ticket_astream
 from .config import REPO_ROOT, settings
 from .ingest.build_index import build as build_index
+from .staff_assistant import AssistantAnswer, ask_assistant
 from .tools import CheckInventoryInput, check_inventory
 from .tools.schedule_visit import JOBS_FILE
 
@@ -63,11 +68,18 @@ def _ensure_index():
 # ---------------------------------------------------------------------------
 
 class TicketPayload(BaseModel):
-    ticket_id: str
+    ticket_id: str | None = Field(
+        None, description="Omit to auto-generate — real customer submissions don't have one yet."
+    )
     customer_name: str = "Unknown"
     customer_region: str = "Berlin"
     subject: str = ""
     body: str = Field(..., description="The customer message body.")
+
+    def with_ticket_id(self) -> dict:
+        data = self.model_dump()
+        data["ticket_id"] = self.ticket_id or f"T-{uuid4().hex[:8].upper()}"
+        return data
 
 
 # ---------------------------------------------------------------------------
@@ -76,6 +88,8 @@ class TicketPayload(BaseModel):
 
 # Resolve relative to this file so it works both locally and after pip install
 DASHBOARD_HTML = Path(__file__).resolve().parent.parent.parent / "frontend" / "dispatcher.html"
+ASSISTANT_HTML = Path(__file__).resolve().parent.parent.parent / "frontend" / "staff_assistant.html"
+INTAKE_HTML = Path(__file__).resolve().parent.parent.parent / "frontend" / "customer_intake.html"
 
 
 @app.get("/", include_in_schema=False)
@@ -86,6 +100,26 @@ def serve_dashboard():
             detail=f"dispatcher.html missing at {DASHBOARD_HTML}",
         )
     return FileResponse(DASHBOARD_HTML, media_type="text/html")
+
+
+@app.get("/assistant", include_in_schema=False)
+def serve_assistant():
+    if not ASSISTANT_HTML.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"staff_assistant.html missing at {ASSISTANT_HTML}",
+        )
+    return FileResponse(ASSISTANT_HTML, media_type="text/html")
+
+
+@app.get("/intake", include_in_schema=False)
+def serve_intake():
+    if not INTAKE_HTML.exists():
+        raise HTTPException(
+            status_code=500,
+            detail=f"customer_intake.html missing at {INTAKE_HTML}",
+        )
+    return FileResponse(INTAKE_HTML, media_type="text/html")
 
 
 # ---------------------------------------------------------------------------
@@ -101,13 +135,43 @@ def health():
 # Tickets
 # ---------------------------------------------------------------------------
 
-def _load_tickets() -> list[dict]:
+SUBMITTED_TICKETS_FILE = JOBS_FILE.parent / "submitted_tickets.json"
+
+
+def _load_seed_tickets() -> list[dict]:
     return json.loads(Path(settings.tickets_json).read_text(encoding="utf-8"))
+
+
+def _load_submitted_tickets() -> list[dict]:
+    if not SUBMITTED_TICKETS_FILE.exists():
+        return []
+    try:
+        return json.loads(SUBMITTED_TICKETS_FILE.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        return []
+
+
+def _append_submitted_ticket(ticket: dict) -> None:
+    """Persist a real customer submission (e.g. from /intake) so it shows up in
+    /tickets alongside the seed data — kept in a separate file so the static seed
+    dataset (which eval/run_evals.py and the dashboard demo rely on staying fixed)
+    never gets mutated by live traffic."""
+    tickets = _load_submitted_tickets()
+    tickets.append(ticket)
+    SUBMITTED_TICKETS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SUBMITTED_TICKETS_FILE.write_text(
+        json.dumps(tickets, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+
+
+def _load_tickets() -> list[dict]:
+    return _load_seed_tickets() + _load_submitted_tickets()
 
 
 @app.get("/tickets")
 def list_tickets():
-    """Return all seed tickets, full body included so the UI can render the detail panel."""
+    """Return all seed tickets plus real submissions, full body included so the UI
+    can render the detail panel."""
     return _load_tickets()
 
 
@@ -119,9 +183,27 @@ def get_ticket(ticket_id: str):
     raise HTTPException(status_code=404, detail=f"ticket {ticket_id} not found")
 
 
+def _record_if_new_submission(payload: TicketPayload, resolved: dict) -> None:
+    # payload.ticket_id is only None for a genuinely new submission (e.g. from
+    # /intake) — the dashboard always replays an existing seed ticket_id, so this
+    # never double-records the demo dataset.
+    if payload.ticket_id is None:
+        _append_submitted_ticket({
+            "ticket_id": resolved["ticket_id"],
+            "received_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+            "channel": "web_form",
+            "customer_name": resolved["customer_name"],
+            "customer_region": resolved["customer_region"],
+            "subject": resolved["subject"],
+            "body": resolved["body"],
+        })
+
+
 @app.post("/tickets/triage")
 def triage(payload: TicketPayload):
-    final = triage_ticket(payload.model_dump())
+    resolved = payload.with_ticket_id()
+    _record_if_new_submission(payload, resolved)
+    final = triage_ticket(resolved)
     # Strip the message log to keep the response light.
     final.pop("messages", None)
     return final
@@ -129,8 +211,11 @@ def triage(payload: TicketPayload):
 
 @app.post("/tickets/triage/stream")
 async def triage_stream(payload: TicketPayload):
+    resolved = payload.with_ticket_id()
+    _record_if_new_submission(payload, resolved)
+
     async def event_source() -> AsyncIterator[bytes]:
-        async for node, partial in triage_ticket_astream(payload.model_dump()):
+        async for node, partial in triage_ticket_astream(resolved):
             partial.pop("messages", None)
             yield f"event: {node}\ndata: {json.dumps(partial, default=str)}\n\n".encode("utf-8")
         yield b"event: done\ndata: {}\n\n"
@@ -148,6 +233,19 @@ def inventory_lookup(part_id: str):
     if not out.matches:
         raise HTTPException(status_code=404, detail=f"part_id {part_id} not found")
     return out.model_dump()
+
+
+# ---------------------------------------------------------------------------
+# Staff assistant (MCP-backed, free-form tool selection)
+# ---------------------------------------------------------------------------
+
+class AssistantAskPayload(BaseModel):
+    message: str = Field(..., description="A support staffer's free-text question.")
+
+
+@app.post("/assistant/ask", response_model=AssistantAnswer)
+async def assistant_ask(payload: AssistantAskPayload):
+    return await ask_assistant(payload.message)
 
 
 # ---------------------------------------------------------------------------

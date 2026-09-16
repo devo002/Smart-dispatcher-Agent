@@ -95,6 +95,31 @@ python -m eval.run_evals
 ```
 
 
+## Evaluation metrics
+
+`eval/run_evals.py` runs all 17 golden test cases (`eval/eval_dataset.json`) through
+the real pipeline and reports three metrics:
+
+- **Task Success Rate** — did the agent's *final* output match the case's expectations
+  (error code, manufacturer, severity floor, whether a part should be required, and
+  whether the self-correction loop should have triggered)? This is the overall
+  pass/fail signal across the whole pipeline, not just retrieval.
+- **Retrieval Hit Rate@5** — of the cases with a ground-truth `expected_error_code`,
+  did the correct KB chunk appear *anywhere* in the top-5 chunks returned by the first
+  research pass, regardless of what the pipeline did with it afterward? This isolates
+  the retriever alone from the rest of the pipeline.
+- **Precision@1** — did the pipeline actually *act on* the correct chunk — i.e. was it
+  the single top hit selected and used — not just present somewhere in the top 5? A
+  case can pass Hit Rate@5 (the right chunk was retrieved) while failing Precision@1
+  (a wrong chunk outranked it and got used instead) — that gap is exactly what this
+  metric is for.
+
+Hit Rate@5 and Precision@1 are only scored on the subset of cases that have a
+ground-truth error code (12 of the 17); the rest are billing/reschedule/no-KB-entry
+tickets with nothing to retrieve, and are reported as `n/a`.
+
+Latest run: **17/17** task success, **12/12** Retrieval Hit Rate@5, **12/12** Precision@1.
+
 ## Evaluation hardening — challenges and fixes
 
 Running the 17-case eval suite exposed two retrieval and extraction bugs that required changes and corrections. Both are documented here because they could reflect

@@ -1,8 +1,9 @@
 """LangGraph node implementations.
 
-Each node is a pure function from state -> partial state. Where Claude is needed
-(triage, plan synthesis), we call the Anthropic SDK directly with structured-output
-prompting; everything else is deterministic Python so it's testable without an API key.
+Each node is a pure function from state -> partial state. triage_node is the only
+node that calls Claude, using a forced tool call (not free-text JSON prompting) so
+the response is schema-validated instead of regex-parsed; everything else is
+deterministic Python so it's testable without an API key.
 """
 
 from __future__ import annotations
@@ -67,25 +68,58 @@ def _cache_put(text: str, result: dict) -> None:
 
 _TRIAGE_SYSTEM = """You are the triage assistant for Empire, a German residential solar
 + heat-pump company. Your job is to read a (possibly messy, mixed German/English)
-customer ticket and extract a structured diagnosis.
-
-Return STRICT JSON with these keys (no prose, no code fences):
-{
-  "error_code": string | null,
-  "manufacturer": string | null,
-  "severity": "low" | "medium" | "high",
-  "intent": "fault" | "billing" | "reschedule" | "general",
-  "required_skills": string[],
-  "detected_language": "de" | "en"
-}
+customer ticket and extract a structured diagnosis by calling the
+record_triage_diagnosis tool exactly once.
 
 Rules:
 - "high" severity = customer has no power, no heat, smoke smell, or safety concern.
 - "medium" = degraded operation, intermittent fault.
 - "low" = informational / billing / reschedule.
 - If the message is purely administrative (rescheduling, billing question), use intent != "fault".
-- Output JSON only.
 """
+
+# Canonical manufacturer spellings — matches _KNOWN_MANUFACTURERS in
+# ingest/chunk_pdfs.py so triage output, RAG metadata, and technician
+# certifications all agree on one casing instead of drifting (e.g. "GoodWe"
+# vs "Goodwe" being silently counted as different manufacturers downstream).
+_KNOWN_MANUFACTURERS = ("Huawei", "SMA", "Fronius", "Goodwe", "Vaillant", "Viessmann")
+
+_TRIAGE_TOOL = {
+    "name": "record_triage_diagnosis",
+    "description": "Record the structured triage diagnosis extracted from a customer ticket.",
+    "input_schema": {
+        "type": "object",
+        "properties": {
+            "error_code": {
+                "type": ["string", "null"],
+                "description": "The manufacturer error/warning code mentioned in the ticket, e.g. '0x0001', '602', 'F.22'. Null if none mentioned.",
+            },
+            "manufacturer": {
+                "type": ["string", "null"],
+                "enum": list(_KNOWN_MANUFACTURERS) + [None],
+                "description": "The equipment manufacturer, if identifiable from the ticket. Null if not mentioned/unclear.",
+            },
+            "severity": {
+                "type": "string",
+                "enum": ["low", "medium", "high"],
+            },
+            "intent": {
+                "type": "string",
+                "enum": ["fault", "billing", "reschedule", "general"],
+            },
+            "required_skills": {
+                "type": "array",
+                "items": {"type": "string"},
+                "description": "Tags like 'solar', 'heatpump', 'battery', 'refrigerant', 'brazing'.",
+            },
+            "detected_language": {
+                "type": "string",
+                "enum": ["de", "en"],
+            },
+        },
+        "required": ["severity", "intent", "required_skills", "detected_language"],
+    },
+}
 
 
 @lru_cache(maxsize=1)
@@ -103,16 +137,6 @@ def _client() -> Anthropic:
         # a legacy client.completions resource that a newer anthropic SDK dropped).
         # Tracing is a nice-to-have; don't let it take down every triage call.
         return client
-
-
-def _extract_json(text: str) -> dict:
-    text = text.strip()
-    if text.startswith("```"):
-        text = re.sub(r"^```(?:json)?", "", text).rstrip("`").strip()
-    m = re.search(r"\{.*\}", text, re.DOTALL)
-    if not m:
-        raise ValueError(f"No JSON object found in: {text!r}")
-    return json.loads(m.group(0))
 
 
 def triage_node(state: DispatchState) -> DispatchState:
@@ -153,12 +177,11 @@ def triage_node(state: DispatchState) -> DispatchState:
         max_tokens=500,
         system=_TRIAGE_SYSTEM,
         messages=[{"role": "user", "content": ticket}],
+        tools=[_TRIAGE_TOOL],
+        tool_choice={"type": "tool", "name": _TRIAGE_TOOL["name"]},
     )
-    raw = msg.content[0].text if msg.content else "{}"
-    try:
-        data = _extract_json(raw)
-    except Exception:
-        data = {}
+    tool_use = next((b for b in msg.content if b.type == "tool_use"), None)
+    data = tool_use.input if tool_use else {}
     triage_data = {
         "error_code": data.get("error_code"),
         "manufacturer": data.get("manufacturer"),
@@ -171,7 +194,7 @@ def triage_node(state: DispatchState) -> DispatchState:
     return {
         **triage_data,
         "iteration": 0,
-        "messages": [AIMessage(content=f"Triage: {raw}")],
+        "messages": [AIMessage(content=f"Triage: {json.dumps(triage_data)}")],
     }
 
 

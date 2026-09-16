@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Empire Staff Assistant</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone@7.22.20/babel.min.js"></script>
+  <script src="https://unpkg.com/marked@12.0.2/marked.min.js"></script>
+  <script src="https://unpkg.com/dompurify@3.1.5/dist/purify.min.js"></script>
+  <style>
+    .md h1, .md h2, .md h3 { font-weight: 600; margin: 0.6em 0 0.3em; }
+    .md h1 { font-size: 1.05rem; } .md h2 { font-size: 1rem; } .md h3 { font-size: 0.925rem; }
+    .md p { margin: 0.4em 0; }
+    .md ul, .md ol { margin: 0.3em 0 0.3em 1.2em; }
+    .md li { margin: 0.15em 0; }
+    .md strong { font-weight: 600; }
+    .md code { background: #f1f5f9; padding: 0.1em 0.35em; border-radius: 0.25em; font-size: 0.85em; }
+    .md table { border-collapse: collapse; margin: 0.5em 0; font-size: 0.875em; }
+    .md th, .md td { border: 1px solid #e7e5e4; padding: 0.3em 0.6em; text-align: left; }
+    .md th { background: #fafaf9; font-weight: 600; }
+    .md hr { border: none; border-top: 1px solid #e7e5e4; margin: 0.6em 0; }
+    body { font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    @keyframes fadeInUp { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+    .msg-in { animation: fadeInUp 0.25s ease both; }
+  </style>
+</head>
+<body class="bg-stone-50">
+  <div id="root"></div>
+
+  <script type="text/babel" data-presets="react" data-type="module">
+    const { useState, useRef, useEffect } = React;
+    const API = "";
+    const cls = (...xs) => xs.filter(Boolean).join(" ");
+
+    const EXAMPLES = [
+      "Is HUA-AC-ISO-V2 in stock near Berlin?",
+      "What's the fix for a Vaillant heat pump showing F.22?",
+      "Who's the best available solar technician in Munich?",
+      "Huawei inverter throwing error 602 — what's the fix, and who could go out to Berlin for it?",
+    ];
+
+    function ToolCallChip({ call }) {
+      const [open, setOpen] = useState(false);
+      const ok = !call.error;
+      return (
+        <div className="text-xs">
+          <button
+            onClick={() => setOpen(o => !o)}
+            className={cls(
+              "inline-flex items-center gap-1.5 px-2 py-1 rounded-full border font-medium transition",
+              ok ? "bg-emerald-50 text-emerald-700 border-emerald-200 hover:bg-emerald-100"
+                 : "bg-rose-50 text-rose-700 border-rose-200 hover:bg-rose-100"
+            )}
+          >
+            <span>{ok ? "🔧" : "⚠"}</span>
+            <span className="font-mono">{call.name}</span>
+            <span className="opacity-60">{open ? "▲" : "▼"}</span>
+          </button>
+          {open && (
+            <pre className="mt-1.5 p-2.5 rounded-md bg-stone-900 text-stone-100 overflow-x-auto text-[11px] leading-relaxed max-w-xl">
+{JSON.stringify({ arguments: call.arguments, ...(call.error ? { error: call.error } : { result: call.result }) }, null, 2)}
+            </pre>
+          )}
+        </div>
+      );
+    }
+
+    function Message({ role, text, toolCalls, pending }) {
+      const isUser = role === "user";
+      return (
+        <div className={cls("msg-in flex", isUser ? "justify-end" : "justify-start")}>
+          <div className={cls("max-w-2xl", isUser ? "" : "w-full")}>
+            <div className={cls(
+              "rounded-2xl px-4 py-2.5 text-sm leading-relaxed",
+              isUser ? "bg-stone-900 text-white whitespace-pre-wrap" : "bg-white border border-stone-200 text-stone-800"
+            )}>
+              {pending ? (
+                <span className="inline-flex items-center gap-1.5 text-stone-400">
+                  <svg className="animate-spin h-3.5 w-3.5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"/>
+                  </svg>
+                  thinking…
+                </span>
+              ) : isUser ? text : (
+                <div className="md" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(marked.parse(text || "")) }} />
+              )}
+            </div>
+            {!!(toolCalls && toolCalls.length) && (
+              <div className="mt-1.5 flex flex-wrap gap-1.5">
+                {toolCalls.map((c, i) => <ToolCallChip key={i} call={c} />)}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    function App() {
+      const [messages, setMessages] = useState([]);
+      const [input, setInput] = useState("");
+      const [busy, setBusy] = useState(false);
+      const [error, setError] = useState(null);
+      const bottomRef = useRef(null);
+
+      useEffect(() => {
+        bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, [messages, busy]);
+
+      const send = async (text) => {
+        const question = (text ?? input).trim();
+        if (!question || busy) return;
+        setInput("");
+        setError(null);
+        setMessages(m => [...m, { role: "user", text: question }]);
+        setBusy(true);
+        try {
+          const res = await fetch(`${API}/assistant/ask`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ message: question }),
+          });
+          if (!res.ok) throw new Error(`HTTP ${res.status}`);
+          const data = await res.json();
+          setMessages(m => [...m, { role: "assistant", text: data.answer, toolCalls: data.tool_calls }]);
+        } catch (e) {
+          setError(e.message);
+        } finally {
+          setBusy(false);
+        }
+      };
+
+      return (
+        <div className="h-screen flex flex-col max-w-3xl mx-auto">
+          <div className="px-6 py-4 border-b border-stone-200 bg-white shrink-0">
+            <h1 className="text-base font-semibold text-stone-900">Empire Staff Assistant</h1>
+            <p className="text-xs text-stone-500 mt-0.5">
+              Ask about stock, fixes, or technicians — Claude decides which tool(s) to call, via MCP.
+            </p>
+          </div>
+
+          <div className="flex-1 overflow-y-auto px-6 py-5 space-y-4">
+            {!messages.length && (
+              <div className="text-center py-10">
+                <p className="text-sm text-stone-400 mb-4">Try one of these:</p>
+                <div className="flex flex-col items-center gap-2">
+                  {EXAMPLES.map(ex => (
+                    <button
+                      key={ex}
+                      onClick={() => send(ex)}
+                      className="text-sm text-left px-3.5 py-2 rounded-lg border border-stone-200 bg-white hover:bg-stone-50 hover:border-stone-300 transition text-stone-700 max-w-md"
+                    >
+                      {ex}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+            {messages.map((m, i) => <Message key={i} role={m.role} text={m.text} toolCalls={m.toolCalls} />)}
+            {busy && <Message role="assistant" pending />}
+            {error && (
+              <div className="text-xs text-rose-700 bg-rose-50 border border-rose-200 rounded-lg px-3 py-2">
+                {error}
+              </div>
+            )}
+            <div ref={bottomRef} />
+          </div>
+
+          <div className="px-6 py-4 border-t border-stone-200 bg-white shrink-0">
+            <div className="flex items-end gap-2">
+              <textarea
+                value={input}
+                onChange={e => setInput(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); send(); } }}
+                placeholder="Ask about stock, a fix, or a technician…"
+                rows={1}
+                className="flex-1 resize-none rounded-xl border border-stone-300 px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-stone-400"
+              />
+              <button
+                onClick={() => send()}
+                disabled={busy || !input.trim()}
+                className="shrink-0 px-4 py-2.5 rounded-xl bg-stone-900 text-white text-sm font-medium disabled:opacity-40 hover:bg-stone-800 transition"
+              >
+                Ask
+              </button>
+            </div>
+          </div>
+        </div>
+      );
+    }
+
+    ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+  </script>
+</body>
+</html>
