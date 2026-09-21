@@ -246,3 +246,24 @@ def test_delete_seed_ticket_is_forbidden(client, admin):
 
 def test_delete_unknown_ticket_is_404(client, admin):
     assert client.delete("/tickets/T-NOPE", headers=admin).status_code == 404
+
+
+# --- DELETE /jobs/{id} (admin) ----------------------------------------------
+
+def test_delete_single_job_keeps_the_others(client, isolated_files, admin):
+    jobs_file, _ = isolated_files
+    _seed_jobs(jobs_file, _job("JOB-1001"), _job("JOB-1002"))
+    r = client.delete("/jobs/JOB-1001", headers=admin)
+    assert r.status_code == 200 and r.json() == {"deleted": "JOB-1001"}
+    assert [j["job_id"] for j in client.get("/jobs").json()] == ["JOB-1002"]
+
+
+def test_delete_job_requires_key(client, isolated_files, admin):
+    jobs_file, _ = isolated_files
+    _seed_jobs(jobs_file, _job())
+    assert client.delete("/jobs/JOB-1001").status_code == 401
+    assert len(client.get("/jobs").json()) == 1
+
+
+def test_delete_unknown_job_is_404(client, admin):
+    assert client.delete("/jobs/JOB-9999", headers=admin).status_code == 404

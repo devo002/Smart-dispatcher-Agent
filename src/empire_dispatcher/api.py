@@ -11,6 +11,7 @@ Endpoints:
     GET  /inventory/{part_id}      -> direct inventory peek
     GET  /jobs                     -> all dispatched jobs (pending_approval | scheduled | rejected)
     GET  /jobs/{job_id}            -> single job detail
+    DELETE /jobs/{job_id}          -> delete one job (needs X-Admin-Key)
     POST /jobs/{job_id}/approve    -> dispatcher approves dispatch (status -> 'scheduled')
     POST /jobs/{job_id}/reject     -> dispatcher rejects (status -> 'rejected')
     GET  /assistant                -> serves the staff assistant chat UI
@@ -374,6 +375,18 @@ def reassign_job(job_id: str, payload: ReassignPayload):
             _save_jobs(jobs)
             return j
     raise HTTPException(status_code=404, detail=f"job {job_id} not found")
+
+
+@app.delete("/jobs/{job_id}")
+def delete_job(job_id: str, x_admin_key: str | None = Header(None)):
+    """Delete a single job (the ticket it belongs to is left untouched)."""
+    _require_admin(x_admin_key)
+    jobs = _load_jobs()
+    kept = [j for j in jobs if j["job_id"] != job_id]
+    if len(kept) == len(jobs):
+        raise HTTPException(status_code=404, detail=f"job {job_id} not found")
+    _save_jobs(kept)
+    return {"deleted": job_id}
 
 
 @app.delete("/jobs")
