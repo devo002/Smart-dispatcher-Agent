@@ -41,6 +41,10 @@ class Settings(BaseSettings):
     langsmith_project: str = "empire-smart-dispatcher"
     langsmith_endpoint: str = ""  # e.g. https://eu.api.smith.langchain.com for EU-region workspaces
 
+    # --- Admin (destructive endpoints) ---
+    # Sent as the X-Admin-Key header. Empty = destructive endpoints are disabled.
+    admin_api_key: str = ""
+
     # --- Models ---
     claude_model: str = "claude-sonnet-4-6"
 

@@ -5,6 +5,7 @@ Endpoints:
     GET  /health
     GET  /tickets                  -> list seed tickets (full body included)
     GET  /tickets/{ticket_id}      -> single ticket detail
+    DELETE /tickets/{ticket_id}    -> delete a submitted ticket + its jobs (needs X-Admin-Key)
     POST /tickets/triage           -> runs workflow synchronously, returns plan JSON
     POST /tickets/triage/stream    -> SSE stream of node-by-node updates
     GET  /inventory/{part_id}      -> direct inventory peek
@@ -20,12 +21,13 @@ Endpoints:
 from __future__ import annotations
 
 import json
+import secrets
 from datetime import datetime
 from pathlib import Path
 from typing import AsyncIterator
 from uuid import uuid4
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, Header, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, StreamingResponse
 from pydantic import BaseModel, Field
@@ -181,6 +183,34 @@ def get_ticket(ticket_id: str):
         if t["ticket_id"] == ticket_id:
             return t
     raise HTTPException(status_code=404, detail=f"ticket {ticket_id} not found")
+
+
+def _require_admin(x_admin_key: str | None) -> None:
+    if not settings.admin_api_key:
+        raise HTTPException(status_code=503, detail="admin endpoints are disabled (ADMIN_API_KEY not set)")
+    if not secrets.compare_digest(x_admin_key or "", settings.admin_api_key):
+        raise HTTPException(status_code=401, detail="invalid or missing X-Admin-Key")
+
+
+@app.delete("/tickets/{ticket_id}")
+def delete_ticket(ticket_id: str, x_admin_key: str | None = Header(None)):
+    """Delete a customer-submitted ticket and any jobs created for it.
+    Seed tickets are read-only and can't be deleted."""
+    _require_admin(x_admin_key)
+    submitted = _load_submitted_tickets()
+    remaining = [t for t in submitted if t["ticket_id"] != ticket_id]
+    if len(remaining) == len(submitted):
+        if any(t["ticket_id"] == ticket_id for t in _load_seed_tickets()):
+            raise HTTPException(status_code=403, detail="seed tickets cannot be deleted")
+        raise HTTPException(status_code=404, detail=f"ticket {ticket_id} not found")
+    SUBMITTED_TICKETS_FILE.write_text(
+        json.dumps(remaining, indent=2, ensure_ascii=False), encoding="utf-8"
+    )
+    jobs = _load_jobs()
+    kept = [j for j in jobs if j.get("ticket_id") != ticket_id]
+    if len(kept) != len(jobs):
+        _save_jobs(kept)
+    return {"deleted": ticket_id, "jobs_removed": len(jobs) - len(kept)}
 
 
 def _record_if_new_submission(payload: TicketPayload, resolved: dict) -> None:

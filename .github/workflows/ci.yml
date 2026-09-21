@@ -29,9 +29,28 @@ jobs:
       - name: Build Docker image
         run: docker build -t empire-smart-dispatcher:ci .
 
+  unit-tests:
+    name: Unit tests (no API key, no network)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
+
+      # Claude, Google Sheets and the jobs/tickets files are all stubbed or redirected
+      # to tmp dirs, so this is fast and deterministic. Runs on every push.
+      - name: Run unit tests
+        run: python -m pytest -q
+
   eval-gate:
     name: Eval suite (regression gate)
-    needs: build-check
+    needs: [build-check, unit-tests]
     if: github.event_name == 'pull_request' && github.base_ref == 'main'
     runs-on: ubuntu-latest
     steps:
